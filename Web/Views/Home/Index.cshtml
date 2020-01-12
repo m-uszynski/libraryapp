@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>LibraryApp</h1>
+    <p class="lead">Welcome to LibraryApp!</p>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <h2>User managment</h2>
+        <p>
+            Click to the button below to go to user management
+        </p>
+        <p>@Html.ActionLink("User managment", "Index", "User", null, new { @class = "btn btn-default" })</p>
+    </div>
+    <div class="col-md-3">
+        <h2>Book management</h2>
+        <p>Click to the button below to go to book management</p>
+        <p><a class="btn btn-default" href="#">Book management (todo)</a></p>
+    </div>
+    <div class="col-md-3">
+        <h2>Borrow management</h2>
+        <p>Click to the button below to go to borrow management</p>
+        <p><a class="btn btn-default" href="#">Borrow management (todo)</a></p>
+    </div>
+    <div class="col-md-3">
+        <h2>Report</h2>
+        <p>Click to the button below to go to report module</p>
+        <p><a class="btn btn-default" href="#">Report (todo)</a></p>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\bin\Debug\Common.dll
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\bin\Debug\Common.pdb
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\obj\Debug\Common.csproj.CoreCompileInputs.cache
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\obj\Debug\Common.dll
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\obj\Debug\Common.pdb
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\bin\Debug\DAL.dll
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\bin\Debug\EntityFramework.dll
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\bin\Debug\DAL.pdb
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\bin\Debug\DAL.dll.config
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\bin\Debug\EntityFramework.xml
+C:\Users\HP\source\repos\LibraryAppSpyrosoft\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache

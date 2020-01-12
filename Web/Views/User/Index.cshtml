@@ -1,0 +1,52 @@
+﻿@model IEnumerable<DAL.User>
+@{ 
+    ViewBag.Title = "Index";
+}
+
+<h2>Lista użytkowników</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Birth Date</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Add Date</th>
+            <th>Modiffied</th>
+            <th>Books Borrowed</th>
+            <th>Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var user in Model)
+        {
+            <tr>
+                <td>@user.FirstName @user.LastName</td>
+                <td>@user.BirthDate.ToString("yyyy-MM-dd")</td>
+                <td>@user.Email</td>
+                <td>@user.Phone</td>
+                <td>@user.AddDate.ToString("yyyy-MM-dd")</td>
+                <td>@if (user.ModifiedDate.HasValue) { @user.ModifiedDate.Value.ToString("yyyy-MM-dd")}</td>
+                <td>@user.Borrows.Where(b=>b.IsReturned==false).ToList().Count</td>
+                <td>@( user.IsActive==true ? "Yes" : "No" )</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", "User", new { id = user.UserId }, new { @class = "btn btn-primary btn-sm"})
+                    @Html.ActionLink("Details","Details","User", new { id = user.UserId }, new { @class = "btn btn-primary btn-sm"})
+                    @if(user.Borrows.Where(b => b.IsReturned == false).ToList().Count == 0)
+                    {
+                        @Html.ActionLink("Delete","SoftDelete","User", new { id = user.UserId }, new { @class = "btn btn-danger btn-sm"})
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Delete","SoftDelete","User", null, new { @disabled="disabled", @class = "btn btn-danger btn-sm"})
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    @Html.ActionLink("Add New","Create","User", null, new { @class = "btn btn-success btn-large"})
+</div>

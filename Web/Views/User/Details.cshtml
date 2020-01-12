@@ -1,0 +1,93 @@
+﻿@model Common.UserDetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<div>
+    <h1>User Details</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Birth Date</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Add Date</th>
+                <th>Modiffied</th>
+                <th>Books Borrowed</th>
+                <th>Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.User.FirstName @Model.User.LastName</td>
+                <td>@Model.User.BirthDate.ToString("dd.MM.yyyy")</td>
+                <td>@Model.User.Email</td>
+                <td>@Model.User.Phone</td>
+                <td>@Model.User.AddDate.ToString("dd.MM.yyyy")</td>
+                <td>@if (Model.User.ModifiedDate.HasValue)
+                {@Model.User.ModifiedDate.Value.ToString("dd-MM-yy")}</td>
+                <td>@Model.User.Borrows.Where(b => b.IsReturned == false).ToList().Count</td>
+                <td>@( Model.User.IsActive == true ? "Yes" : "No" )</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<hr />
+<div>
+    <h2>Owned books</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Release Date</th>
+                <th>ISBN</th>
+                <th>Book Genre</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model.Book)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@if (book.ReleaseDate.HasValue) { @book.ReleaseDate.Value.ToString("dd.MM.yyyy") }</td>
+                    <td>@book.ISBN</td>
+                    <td>@book.DictBookGenre.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<hr />
+<div>
+    <h2>Entire history of borrows</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>Is Returned</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var borrow in Model.Borrow)
+            {
+                <tr>
+                    <td>@borrow.Book.Title</td>
+                    <td>@borrow.Book.Author</td>
+                    <td>@borrow.FromDate.ToString("dd.MM.yyyy")</td>
+                    <td>@borrow.ToDate.ToString("dd.MM.yyyy")</td>
+                    <td>@(borrow.IsReturned == true ? "Yes" : "No")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<hr />
+@Html.ActionLink("Back to list", "Index", "User", null, new { @class = "btn btn-primary" })

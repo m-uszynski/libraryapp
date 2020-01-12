@@ -1,0 +1,40 @@
+﻿@model DAL.User
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Confirm deleted</h2>
+
+<div>
+    <p>Are you sure to delete this user?</p>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            User Name
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model=>model.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            Add Date
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AddDate)
+        </dd>
+        <dt class="col-sm-2">
+            Modiffied Date
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ModifiedDate)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ActionLink("Cancel", "Index", "User", null, new { @class = "btn btn-primary" })
+        <input type="submit" value="Delete" class="btn btn-danger" />
+    }
+</div>
