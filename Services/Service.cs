@@ -41,6 +41,11 @@ namespace Services
         }
 
         // Book service
+        public IEnumerable<Book> GetBooks()
+        {
+            return libraryEntities.Books;
+        }
+
         public IEnumerable<Book> GetOwnedBooks(int userId)
         {
             List<Book> books = new List<Book>();

@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.mobile.all.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/kendo/kendo.all.min.js"></script>
+<script src="~/Scripts/kendo/jszip.min.js"></script>
+
+<h2>Index</h2>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // get JSON from controller
+    var actionUrl = '/Book/GetJsonBooks';
+    function getData() {
+        var data = [];
+        $.ajax({
+            url: actionUrl,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                data = json;
+            }
+        })
+        return data
+    }
+
+    // grid
+    $("#grid").kendoGrid({
+        columns: [{
+            title: "Title",
+            field: "Title",
+            filterable: false,
+            encoded: true
+        }, {
+            title: "Author",
+            field: "Author",
+            encoded: true
+        }, {
+            title: "ReleaseDate",
+            field: "ReleaseDate",
+            format: "{0:dd.MM.yyyy}",
+            encoded: false
+        }, {
+            title: "ISBN",
+            field: "ISBN",
+            encoded: true
+        }, {
+            title: "Count",
+            field: "Count",
+            encoded: true
+        }, {
+            title: "AddDate",
+            field: "AddDate",
+            format: "{0:dd.MM.yyyy}",
+            endcoded: false
+        }, {
+            title: "ModifiedDate",
+            field: "ModifiedDate",
+            format: "{0:dd.MM.yyyy}",
+            encoded: false
+            }, {
+                command: [{
+                    name: "details",
+                    click: function (e) {
+                        e.preventDefault();
+                        var tr = $(e.target).closest("tr");
+                        var data = this.dataItem(tr);
+                        console.log("Przekierowanie do szczegółów: " + data.BookId);
+                    },
+              
+                },
+                    {
+                        name: "edit",
+                        click: function (e) {
+                            e.preventDefault();
+                            var tr = $(e.target).closest("tr");
+                            var data = this.dataItem(tr);
+                            console.log("Popup do edycji dla ksiazki: " + data.BookId);
+                        }
+                }]
+            }
+        ],
+        //pageable: {
+        //    buttonCount: 10,
+        //},
+        sortable: true,
+        filterable: false,
+        height: "500px",
+        messages: {
+            noRecords: "No records available."
+        },
+        dataSource: {
+            data: getData(),
+            //pageSize: 20,
+            schema: {
+                model: {
+                    fields: {
+                        BookId: {
+                            type: "number"
+                        },
+                        Author: {
+                            type: "string"
+                        },
+                        Title: {
+                            type: "string"
+                        },
+                        ReleaseDate: {
+                            type: "date",
+                            defaultValue: null
+                        },
+                        ISBN: {
+                            type: "string"
+                        },
+                        Count: {
+                            type: "number",
+                        },
+                        AddDate: {
+                            type: "date",
+                            defaultValue: null
+                        },
+                        ModifiedDate: {
+                            type: "date",
+                            defaultValue: null
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+
+</script>
