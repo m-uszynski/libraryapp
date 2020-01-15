@@ -1,0 +1,177 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.mobile.all.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/kendo/kendo.all.min.js"></script>
+<script src="~/Scripts/kendo/jszip.min.js"></script>
+
+<h1>Books</h1>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="grid"></div>
+        </div>
+    </div>
+</div>
+<hr />
+<button id="addBook" class="btn btn-success">Add new book</button>
+
+<div class="modal fade"
+     id="basicModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="basicModal">
+</div>
+
+<script>
+
+    // get JSON from controller
+    var actionUrl = '/Book/GetBooks';
+    function getData() {
+        var data = [];
+        $.ajax({
+            url: actionUrl,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                data = json;
+            }
+        })
+        return data
+    }
+
+    // grid
+    $("#grid").kendoGrid({
+        columns: [{
+            title: "Title",
+            field: "Title",
+            filterable: false,
+            encoded: true
+        }, {
+            title: "Author",
+            field: "Author",
+            encoded: true
+        }, {
+            title: "Release Date",
+            field: "ReleaseDate",
+            format: "{0:dd.MM.yyyy}",
+            encoded: false
+        }, {
+            title: "ISBN",
+            field: "ISBN",
+            encoded: true
+        },
+            {
+            title: "Genre",
+            field: "DictBookGenre.Name",
+            encoded: true
+        }, {
+            title: "Add Date",
+            field: "AddDate",
+            format: "{0:dd.MM.yyyy}",
+            endcoded: false
+        }, {
+            title: "Modified Date",
+            field: "ModifiedDate",
+            format: "{0:dd.MM.yyyy}",
+            encoded: false
+            }, {
+                command: [{
+                    name: "Details",
+                    click: function (e) {
+                        e.preventDefault();
+                        var tr = $(e.target).closest("tr");
+                        var data = this.dataItem(tr);
+                        var bookId = data.BookId;
+                        var url = '@Url.Action("Details","Book", new { id = "__id__" })';
+                        window.location.href = url.replace('__id__', bookId);
+                    },
+              
+                },
+                    {
+                        name: "Edit",
+                        click: function (e) {
+                            e.preventDefault();
+                            var tr = $(e.target).closest("tr");
+                            var data = this.dataItem(tr);
+                            var id = data.BookId;
+                            AddModalToEdit(id).done(function () {
+                                $("#basicModal").modal("show");
+                            });
+                        }
+                }]
+            }
+        ],
+        sortable: true,
+        filterable: false,
+        height: "500px",
+        messages: {
+            noRecords: "No records available."
+        },
+        dataSource: {
+            data: getData(),
+            schema: {
+                model: {
+                    fields: {
+                        BookId: {
+                            type: "number"
+                        },
+                        Author: {
+                            type: "string"
+                        },
+                        Title: {
+                            type: "string"
+                        },
+                        ReleaseDate: {
+                            type: "date",
+                            defaultValue: null
+                        },
+                        ISBN: {
+                            type: "string"
+                        },
+                        Count: {
+                            type: "number",
+                        },
+                        AddDate: {
+                            type: "date",
+                            defaultValue: null
+                        },
+                        ModifiedDate: {
+                            type: "date",
+                            defaultValue: null
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    AddModalToCreate = function () {
+        var url = '@Url.Action("Create","Book")'
+        return $.get(url, function (data) {
+            $("#basicModal").html(data);
+        });
+    }
+
+    AddModalToEdit = function (id) {
+        var url = '@Url.Action("Edit","Book")'
+        return $.get(url, {id: id}, function (data) {
+            $("#basicModal").html(data);
+        });
+    }
+
+    $("#addBook").click(function () {
+        AddModalToCreate().done(function () {
+            $("#basicModal").modal("show");
+        })
+    })
+
+</script>
