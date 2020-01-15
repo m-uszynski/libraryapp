@@ -15,6 +15,8 @@ namespace Services
         public Service()
         {
             this.libraryEntities = new LibraryEntities();
+            libraryEntities.Configuration.LazyLoadingEnabled = false;
+            libraryEntities.Configuration.ProxyCreationEnabled = false;
         }
 
         // User service
@@ -41,9 +43,15 @@ namespace Services
         }
 
         // Book service
+        public void UpdateBook(Book book)
+        {
+            libraryEntities.Entry(book).State = EntityState.Modified;
+            libraryEntities.SaveChanges();
+        }
+
         public IEnumerable<Book> GetBooks()
         {
-            return libraryEntities.Books;
+            return libraryEntities.Books.Include(b=>b.DictBookGenre).ToList();
         }
 
         public IEnumerable<Book> GetOwnedBooks(int userId)
@@ -57,10 +65,44 @@ namespace Services
             return books;
         }
 
+        public void InsertBook(Book book)
+        {
+            libraryEntities.Books.Add(book);
+            libraryEntities.SaveChanges();
+        }
+
+        public Book GetBookById(int BookId)
+        {
+            return libraryEntities.Books.Find(BookId);
+        }
+
+        public int GetCountOfBorrowedBooks(int id)
+        {
+            var book = libraryEntities.Books.Find(id);
+            int count = book.Borrows.Where(b => b.IsReturned == false).Count();
+            return count;
+        }
+
         // Borrow service
         public IEnumerable<Borrow> GetBorrowsHistory(int UserId)
         {
             return libraryEntities.Borrows.Where(b => b.UserId == UserId).ToList();
+        }
+
+        public IEnumerable<Borrow> GetBorrowsInBook(int BookId)
+        {
+            return libraryEntities.Borrows.Where(b => b.BookId == BookId).Include(b => b.User).ToList();
+        }
+
+        // Book Genre service
+        public IEnumerable<DictBookGenre> GetDictBookGenre()
+        {
+            return libraryEntities.DictBookGenres.ToList();
+        }
+
+        public string GetDictBookGenreName(int BookGenreId)
+        {
+            return libraryEntities.DictBookGenres.Where(d => d.BookGenreId == BookGenreId).FirstOrDefault().Name;
         }
     }
 }

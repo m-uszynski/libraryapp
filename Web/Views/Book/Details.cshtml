@@ -1,0 +1,210 @@
+﻿@model Common.BookViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<link href="~/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.mobile.all.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/kendo/kendo.all.min.js"></script>
+<script src="~/Scripts/kendo/jszip.min.js"></script>
+
+<h1>Book Details</h1>
+<hr />
+
+    <div>
+        <b>@Html.DisplayNameFor(model => model.Title)</b>:
+        @Html.DisplayFor(model => model.Title)
+    </div>
+    <div>
+        <b>@Html.DisplayNameFor(model => model.Author)</b>:
+        @Html.DisplayFor(model => model.Author)
+    </div>
+    <div>
+        <b>@Html.DisplayNameFor(model => model.ReleaseDate)</b>:
+        @Html.DisplayFor(model => model.ReleaseDate)
+    </div>
+    <div>
+        <b>@Html.DisplayNameFor(model => model.ISBN)</b>:
+        @Html.DisplayFor(model => model.ISBN)
+    </div>
+    <div>
+        <b>@Html.DisplayNameFor(model => model.GenreName)</b>:
+        @Html.DisplayFor(model => model.GenreName)
+    </div>
+    <div>
+        <b>@Html.DisplayNameFor(model => model.Count)</b>:
+        @Html.DisplayFor(model => model.Count)
+    </div>
+    <div>
+        <b>@Html.DisplayNameFor(model => model.AddDate)</b>:
+        @Html.DisplayFor(model => model.AddDate)
+    </div>
+    <div>
+        <b>@Html.DisplayNameFor(model => model.ModifiedDate)</b>:
+        @Html.DisplayFor(model => model.ModifiedDate)
+    </div>
+
+<hr />
+
+<h2>Current borrows</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="currentBorrowsGrid"></div>
+        </div>
+    </div>
+</div>
+<hr />
+
+<h2>History of borrows</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="historyOfBorrowsGrid"></div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@Html.ActionLink("Back to list", "Index", "Book", null, new { @class = "btn btn-primary" })
+
+
+<script>
+    var model = @Html.Raw(Json.Encode(Model));
+
+    var actionUrlToGetBorrow = '/Book/GetBorrowsInBook/' + model.BookId;
+    function getBorrows() {
+        var data = [];
+        $.ajax({
+            url: actionUrlToGetBorrow,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                data = json;
+            }
+        })
+        return data;
+    }
+
+    var actionUrlToGetCurrentBorrow = '/Book/GetCurrentBorrowInBook/' + model.BookId;
+    function getCurrentBorrows() {
+        var data = [];
+        $.ajax({
+            url: actionUrlToGetCurrentBorrow,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                data = json;
+            }
+        })
+        return data;
+    }
+
+    $("#historyOfBorrowsGrid").kendoGrid({
+         columns: [{
+             title: "First Name",
+             field: "User.FirstName",
+             filterable: false,
+             encoded: true
+         },{
+             title: "Last Name",
+             field: "User.LastName",
+             filterable: false,
+             encoded: true
+         },{
+            title: "From Date",
+            field: "FromDate",
+            format: "{0:dd.MM.yyyy}",
+            encoded: false
+        }, {
+            title: "To Date",
+            field: "ToDate",
+            format: "{0:dd.MM.yyyy}",
+            encoded: false
+        }, {
+            title: "Is Returned?",
+            field: "IsReturned",
+            template: "#= IsReturned ? 'Yes' : 'No' #"
+        }
+        ],
+        sortable: false,
+        filterable: false,
+        height: "250px",
+        messages: {
+            noRecords: "No records available."
+        },
+        dataSource: {
+            data: getBorrows(),
+            schema: {
+                model: {
+                    fields: {
+                        FromDate: {
+                            type: "date",
+                            defaultValue: null
+                        },
+                        ToDate: {
+                            type: "date",
+                            defaultValue: null
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    $("#currentBorrowsGrid").kendoGrid({
+        columns: [{
+            title: "First Name",
+            field: "User.FirstName",
+            filterable: false,
+            encoded: true
+        }, {
+            title: "Last Name",
+            field: "User.LastName",
+            filterable: false,
+            encoded: true
+        }, {
+            title: "From Date",
+            field: "FromDate",
+            format: "{0:dd.MM.yyyy}",
+            encoded: false
+        }, {
+            title: "To Date",
+            field: "ToDate",
+            format: "{0:dd.MM.yyyy}",
+            encoded: false
+        }
+        ],
+        sortable: false,
+        filterable: false,
+        height: "250px",
+        messages: {
+            noRecords: "No records available."
+        },
+        dataSource: {
+            data: getCurrentBorrows(),
+            schema: {
+                model: {
+                    fields: {
+                        FromDate: {
+                            type: "date",
+                            defaultValue: null
+                        },
+                        ToDate: {
+                            type: "date",
+                            defaultValue: null
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+</script>

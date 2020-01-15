@@ -12,7 +12,7 @@
 <script src="~/Scripts/kendo/kendo.all.min.js"></script>
 <script src="~/Scripts/kendo/jszip.min.js"></script>
 
-<h2>Index</h2>
+<h1>Books</h1>
 
 <div class="container-fluid">
     <div class="row">
@@ -21,13 +21,20 @@
         </div>
     </div>
 </div>
+<hr />
+<button id="addBook" class="btn btn-success">Add new book</button>
 
-<div id="AddUserForm"></div>
+<div class="modal fade"
+     id="basicModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="basicModal">
+</div>
 
 <script>
 
     // get JSON from controller
-    var actionUrl = '/Book/GetJsonBooks';
+    var actionUrl = '/Book/GetBooks';
     function getData() {
         var data = [];
         $.ajax({
@@ -53,7 +60,7 @@
             field: "Author",
             encoded: true
         }, {
-            title: "ReleaseDate",
+            title: "Release Date",
             field: "ReleaseDate",
             format: "{0:dd.MM.yyyy}",
             encoded: false
@@ -61,45 +68,48 @@
             title: "ISBN",
             field: "ISBN",
             encoded: true
-        }, {
-            title: "Count",
-            field: "Count",
+        },
+            {
+            title: "Genre",
+            field: "DictBookGenre.Name",
             encoded: true
         }, {
-            title: "AddDate",
+            title: "Add Date",
             field: "AddDate",
             format: "{0:dd.MM.yyyy}",
             endcoded: false
         }, {
-            title: "ModifiedDate",
+            title: "Modified Date",
             field: "ModifiedDate",
             format: "{0:dd.MM.yyyy}",
             encoded: false
             }, {
                 command: [{
-                    name: "details",
+                    name: "Details",
                     click: function (e) {
                         e.preventDefault();
                         var tr = $(e.target).closest("tr");
                         var data = this.dataItem(tr);
-                        console.log("Przekierowanie do szczegółów: " + data.BookId);
+                        var bookId = data.BookId;
+                        var url = '@Url.Action("Details","Book", new { id = "__id__" })';
+                        window.location.href = url.replace('__id__', bookId);
                     },
               
                 },
                     {
-                        name: "edit",
+                        name: "Edit",
                         click: function (e) {
                             e.preventDefault();
                             var tr = $(e.target).closest("tr");
                             var data = this.dataItem(tr);
-                            console.log("Popup do edycji dla ksiazki: " + data.BookId);
+                            var id = data.BookId;
+                            AddModalToEdit(id).done(function () {
+                                $("#basicModal").modal("show");
+                            });
                         }
                 }]
             }
         ],
-        //pageable: {
-        //    buttonCount: 10,
-        //},
         sortable: true,
         filterable: false,
         height: "500px",
@@ -108,7 +118,6 @@
         },
         dataSource: {
             data: getData(),
-            //pageSize: 20,
             schema: {
                 model: {
                     fields: {
@@ -145,5 +154,24 @@
         }
     });
 
+    AddModalToCreate = function () {
+        var url = '@Url.Action("Create","Book")'
+        return $.get(url, function (data) {
+            $("#basicModal").html(data);
+        });
+    }
+
+    AddModalToEdit = function (id) {
+        var url = '@Url.Action("Edit","Book")'
+        return $.get(url, {id: id}, function (data) {
+            $("#basicModal").html(data);
+        });
+    }
+
+    $("#addBook").click(function () {
+        AddModalToCreate().done(function () {
+            $("#basicModal").modal("show");
+        })
+    })
 
 </script>
