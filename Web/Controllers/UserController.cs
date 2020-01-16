@@ -103,12 +103,7 @@ namespace Web.Controllers
         public ActionResult Details(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            UserDetailsViewModel userDetailsViewModel = new UserDetailsViewModel
-            {
-                UserModel = userService.GetUserById(id),
-                BorrowModel = borrowService.GetUserBorrowsHistory(id),
-                BookModel = bookService.GetOwnedBooksByUserId(id)
-            };
+            var userDetailsViewModel = userService.GetUsersDetailsModel(id);
             return View(userDetailsViewModel);
         }
 

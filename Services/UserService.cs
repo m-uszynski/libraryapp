@@ -20,19 +20,19 @@ namespace Services
         // Get All Users
         public IQueryable<UserViewModel> GetUsers()
         {
-            IQueryable<User> users = libraryEntities.Users.Include("Borrows");
-            var userModel = users.Select(x => new UserViewModel {
-                UserId = x.UserId,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                BirthDate = x.BirthDate,
-                Email = x.Email,
-                Phone = x.Phone,
-                AddDate = x.AddDate,
-                ModifiedDate = x.ModifiedDate,
-                IsActive = x.IsActive,
-                Borrows = x.Borrows
-            });
+            var userModel = libraryEntities.Users.Include("Borrows")
+                .Select(x => new UserViewModel {
+                    UserId = x.UserId,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    BirthDate = x.BirthDate,
+                    Email = x.Email,
+                    Phone = x.Phone,
+                    AddDate = x.AddDate,
+                    ModifiedDate = x.ModifiedDate,
+                    IsActive = x.IsActive,
+                    BorrowedBooksCount = x.Borrows.Count(y => y.IsReturned==false),
+                });
             return userModel;
         }
 
@@ -72,7 +72,7 @@ namespace Services
                 AddDate = user.AddDate,
                 ModifiedDate = user.ModifiedDate,
                 IsActive = user.IsActive,
-                Borrows = user.Borrows
+                BorrowedBooksCount = user.Borrows.Count(y => y.IsReturned == false),
             };
             return searchedUser;
         }
@@ -98,6 +98,45 @@ namespace Services
             User deletedUser = libraryEntities.Users.Find(id);
             deletedUser.IsActive = false;
             libraryEntities.SaveChanges();
+        }
+
+        // Get User Borrows History
+        public IEnumerable<UserBooksHistoryViewModel> GetUserBorrowsHistory(int? id)
+        {
+            var borrows = libraryEntities.Borrows.Where(b => b.UserId == id).Join(libraryEntities.Books,
+                borrow => borrow.BorrowId,
+                book => book.BookId,
+                (borrow, book) => new { Borrow = borrow, Book = book })
+                .Select(x => new UserBooksHistoryViewModel
+                {
+                    BookId = x.Book.BookId,
+                    Title = x.Book.Title,
+                    Author = x.Book.Author,
+                    ISBN = x.Book.ISBN,
+                    FromDate = x.Borrow.FromDate,
+                    ToDate = x.Borrow.ToDate,
+                    IsReturned = x.Borrow.IsReturned
+                }).ToList();
+
+            return borrows;
+        }
+
+        // Get User Books which is non returned
+        public IEnumerable<UserBooksHistoryViewModel> GetUserOwnedBooks(int? id)
+        {
+            return GetUserBorrowsHistory(id).Where(x => x.IsReturned == false);
+        }
+
+        // Get User Details Model
+        public UserDetailsViewModel GetUsersDetailsModel(int? id)
+        {
+            UserDetailsViewModel userDetailsViewModel = new UserDetailsViewModel
+            {
+                UserModel = GetUserById(id),
+                BorrowModel = GetUserBorrowsHistory(id),
+                BookModel = GetUserOwnedBooks(id)
+            };
+            return userDetailsViewModel;
         }
     }
 }

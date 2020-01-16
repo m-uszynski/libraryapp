@@ -51,7 +51,7 @@ namespace Common
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
 
-        public virtual ICollection<Borrow> Borrows { get; set; }
+        public int BorrowedBooksCount { get; set; }
 
     }
 }

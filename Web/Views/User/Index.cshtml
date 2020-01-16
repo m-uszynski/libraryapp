@@ -28,12 +28,12 @@
                 <td>@user.Phone</td>
                 <td>@user.AddDate.ToString("yyyy-MM-dd")</td>
                 <td>@if (user.ModifiedDate.HasValue) { @user.ModifiedDate.Value.ToString("yyyy-MM-dd")}</td>
-                <td>@user.Borrows.Where(b=>b.IsReturned==false).ToList().Count</td>
+                <td>@user.BorrowedBooksCount</td>
                 <td>@( user.IsActive==true ? "Yes" : "No" )</td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", "User", new { id = user.UserId }, new { @class = "btn btn-primary btn-sm"})
                     @Html.ActionLink("Details","Details","User", new { id = user.UserId }, new { @class = "btn btn-primary btn-sm"})
-                    @if(user.Borrows.Where(b => b.IsReturned == false).ToList().Count == 0 && user.IsActive==true)
+                    @if(user.BorrowedBooksCount == 0 && user.IsActive==true)
                     {
                         @Html.ActionLink("Delete","SoftDelete","User", new { id = user.UserId }, new { @class = "btn btn-danger btn-sm"})
                     }

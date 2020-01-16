@@ -51,6 +51,8 @@
                 AddDate: "2000-01-01"
             }
 
+            console.log(jsonData.BookId);
+
             $.ajax({
                 url: "/Book/Edit/" + jsonData.BookId,
                 type: "POST",

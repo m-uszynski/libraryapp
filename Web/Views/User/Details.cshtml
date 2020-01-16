@@ -28,7 +28,7 @@
                 <td>@Model.UserModel.Phone</td>
                 <td>@Model.UserModel.AddDate.ToString("dd.MM.yyyy")</td>
                 <td>@if (Model.UserModel.ModifiedDate.HasValue) {@Model.UserModel.ModifiedDate.Value.ToString("dd-MM-yy")}</td>
-                <td>@Model.UserModel.Borrows.Where(b => b.IsReturned == false).ToList().Count</td>
+                <td>@Model.UserModel.BorrowedBooksCount</td>
                 <td>@( Model.UserModel.IsActive == true ? "Yes" : "No" )</td>
             </tr>
         </tbody>
@@ -42,20 +42,22 @@
             <tr>
                 <th>Title</th>
                 <th>Author</th>
-                <th>Release Date</th>
                 <th>ISBN</th>
-                <th>Book Genre</th>
+                <th>From Date</th>
+                <th>To date</th>
+                <th>Is Returned</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var book in Model.BookModel)
+            @foreach (var bookBorrow in Model.BookModel)
             {
                 <tr>
-                    <td>@book.Title</td>
-                    <td>@book.Author</td>
-                    <td>@if (book.ReleaseDate.HasValue) { @book.ReleaseDate.Value.ToString("dd.MM.yyyy") }</td>
-                    <td>@book.ISBN</td>
-                    <td>@book.DictBookGenre.Name</td>
+                    <td>@bookBorrow.Title</td>
+                    <td>@bookBorrow.Author</td>
+                    <td>@bookBorrow.ISBN</td>
+                    <td>@bookBorrow.FromDate.ToString("dd.MM.yyyy")</td>
+                    <td>@bookBorrow.ToDate.ToString("dd.MM.yyyy")</td>
+                    <td>@(bookBorrow.IsReturned == true ? "Yes" : "No")</td>
                 </tr>
             }
         </tbody>
@@ -69,20 +71,22 @@
             <tr>
                 <th>Title</th>
                 <th>Author</th>
+                <th>ISBN</th>
                 <th>From Date</th>
                 <th>To Date</th>
                 <th>Is Returned</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var borrow in Model.BorrowModel)
+            @foreach (var bookBorrow in Model.BorrowModel)
             {
                 <tr>
-                    <td>@borrow.Book.Title</td>
-                    <td>@borrow.Book.Author</td>
-                    <td>@borrow.FromDate.ToString("dd.MM.yyyy")</td>
-                    <td>@borrow.ToDate.ToString("dd.MM.yyyy")</td>
-                    <td>@(borrow.IsReturned == true ? "Yes" : "No")</td>
+                    <td>@bookBorrow.Title</td>
+                    <td>@bookBorrow.Author</td>
+                    <td>@bookBorrow.ISBN</td>
+                    <td>@bookBorrow.FromDate.ToString("dd.MM.yyyy")</td>
+                    <td>@bookBorrow.ToDate.ToString("dd.MM.yyyy")</td>
+                    <td>@(bookBorrow.IsReturned == true ? "Yes" : "No")</td>
                 </tr>
             }
         </tbody>

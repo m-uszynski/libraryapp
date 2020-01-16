@@ -10,7 +10,7 @@ namespace Common
     public class UserDetailsViewModel
     {
         public UserViewModel UserModel { get; set; }
-        public IEnumerable<BookViewModel> BookModel { get; set; }
-        public IEnumerable<BorrowViewModel> BorrowModel { get; set; }
+        public IEnumerable<UserBooksHistoryViewModel> BookModel { get; set; }
+        public IEnumerable<UserBooksHistoryViewModel> BorrowModel { get; set; }
     }
 }
