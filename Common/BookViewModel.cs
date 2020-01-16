@@ -54,5 +54,7 @@ namespace Common
 
         [Display(Name = "Borrowed Count")]
         public int BorrowCount { get; set; }
+
+        public virtual DictBookGenre DictBookGenre { get; set; }
     }
 }

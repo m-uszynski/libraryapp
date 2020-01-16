@@ -6,29 +6,30 @@ using System.Web.Mvc;
 using Services;
 using Common;
 using System.Data;
-using DAL;
+using System.Net;
 
 namespace Web.Controllers
 {
     public class UserController : Controller
     {
-        private Service service;
+        private UserService userService;
+        private BookService bookService;
+        private BorrowService borrowService;
 
         public UserController()
         {
-            this.service = new Service();
+            userService = new UserService();
+            bookService = new BookService();
+            borrowService = new BorrowService();
         }
 
-        #region Index
         // GET: User
         public ActionResult Index()
         {
-            var users = service.GetUsers().Where(u=>u.IsActive==true);
+            var users = userService.GetUsers();
             return View(users);
         }
-        #endregion
 
-        #region Create
         [HttpGet]
         public ActionResult Create()
         {
@@ -43,18 +44,7 @@ namespace Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    User newUser = new User
-                    {
-                        FirstName = userViewModel.FirstName,
-                        LastName = userViewModel.LastName,
-                        BirthDate = userViewModel.BirthDate,
-                        Email = userViewModel.Email,
-                        Phone = userViewModel.Phone,
-                        AddDate = DateTime.Now,
-                        IsActive = true
-                    };
-
-                    service.InsertUser(newUser);
+                    userService.InsertUser(userViewModel);
                     return RedirectToAction("Index");
                 }
             }
@@ -64,23 +54,14 @@ namespace Web.Controllers
             }
             return View(userViewModel);
         }
-        #endregion
 
-        #region Edit
         [HttpGet]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            var user = service.GetUserById(id);
-            UserViewModel userViewModel = new UserViewModel
-            {
-                UserId = user.UserId,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                BirthDate = user.BirthDate,
-                Email = user.Email,
-                Phone = user.Phone
-            };
-            return View(userViewModel);
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var user = userService.GetUserById(id);
+            if (user == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            return View(user);
         }
 
         [HttpPost]
@@ -91,15 +72,7 @@ namespace Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    User user = service.GetUserById(userViewModel.UserId);
-                    user.FirstName = userViewModel.FirstName;
-                    user.LastName = userViewModel.LastName;
-                    user.BirthDate = userViewModel.BirthDate;
-                    user.Email = userViewModel.Email;
-                    user.Phone = userViewModel.Phone;
-                    user.ModifiedDate = DateTime.Now;
-
-                    service.UpdateUser(user);
+                    userService.UpdateUser(userViewModel);
                     return RedirectToAction("Index");
                 }
             }
@@ -109,13 +82,13 @@ namespace Web.Controllers
             }
             return View(userViewModel);
         }
-        #endregion
 
-        #region SoftDelete
         [HttpGet]
-        public ActionResult SoftDelete(int id)
+        public ActionResult SoftDelete(int? id)
         {
-            User user = service.GetUserById(id);
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            UserViewModel user = userService.GetUserById(id);
+            if (user == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             return View(user);
         }
 
@@ -123,25 +96,21 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SoftDeleteConfirmed(int id)
         {
-            User user = service.GetUserById(id);
-            user.IsActive = false;
-            service.UpdateUser(user);
+            userService.DeleteUser(id);
             return RedirectToAction("Index");
         }
-        #endregion
 
-        #region Details
-        public ViewResult Details(int id)
+        public ActionResult Details(int? id)
         {
-            User user = service.GetUserById(id);
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             UserDetailsViewModel userDetailsViewModel = new UserDetailsViewModel
             {
-                User = user,
-                Borrow = service.GetBorrowsHistory(id),
-                Book = service.GetOwnedBooks(id)
+                UserModel = userService.GetUserById(id),
+                BorrowModel = borrowService.GetUserBorrowsHistory(id),
+                BookModel = bookService.GetOwnedBooksByUserId(id)
             };
             return View(userDetailsViewModel);
         }
-        #endregion
+
     }
 }

@@ -22,15 +22,14 @@
         </thead>
         <tbody>
             <tr>
-                <td>@Model.User.FirstName @Model.User.LastName</td>
-                <td>@Model.User.BirthDate.ToString("dd.MM.yyyy")</td>
-                <td>@Model.User.Email</td>
-                <td>@Model.User.Phone</td>
-                <td>@Model.User.AddDate.ToString("dd.MM.yyyy")</td>
-                <td>@if (Model.User.ModifiedDate.HasValue)
-                {@Model.User.ModifiedDate.Value.ToString("dd-MM-yy")}</td>
-                <td>@Model.User.Borrows.Where(b => b.IsReturned == false).ToList().Count</td>
-                <td>@( Model.User.IsActive == true ? "Yes" : "No" )</td>
+                <td>@Model.UserModel.FirstName @Model.UserModel.LastName</td>
+                <td>@Model.UserModel.BirthDate.ToString("dd.MM.yyyy")</td>
+                <td>@Model.UserModel.Email</td>
+                <td>@Model.UserModel.Phone</td>
+                <td>@Model.UserModel.AddDate.ToString("dd.MM.yyyy")</td>
+                <td>@if (Model.UserModel.ModifiedDate.HasValue) {@Model.UserModel.ModifiedDate.Value.ToString("dd-MM-yy")}</td>
+                <td>@Model.UserModel.Borrows.Where(b => b.IsReturned == false).ToList().Count</td>
+                <td>@( Model.UserModel.IsActive == true ? "Yes" : "No" )</td>
             </tr>
         </tbody>
     </table>
@@ -49,7 +48,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var book in Model.Book)
+            @foreach (var book in Model.BookModel)
             {
                 <tr>
                     <td>@book.Title</td>
@@ -76,7 +75,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var borrow in Model.Borrow)
+            @foreach (var borrow in Model.BorrowModel)
             {
                 <tr>
                     <td>@borrow.Book.Title</td>

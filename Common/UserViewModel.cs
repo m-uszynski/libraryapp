@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -37,6 +38,20 @@ namespace Common
         [DataType(DataType.PhoneNumber)]
         [MaxLength(20, ErrorMessage = "Phone cannot be longer than 50 characters")]
         public string Phone { get; set; }
+
+        [Display(Name = "Add Date")]
+        [DataType(DataType.Date)]
+        public System.DateTime AddDate { get; set; }
+
+        [Display(Name = "Modified Date")]
+        [DataType(DataType.Date)]
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
+
+        [Required]
+        [Display(Name = "Is Active")]
+        public bool IsActive { get; set; }
+
+        public virtual ICollection<Borrow> Borrows { get; set; }
 
     }
 }
