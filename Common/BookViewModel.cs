@@ -51,8 +51,5 @@ namespace Common
 
         [Display(Name = "Genre")]
         public string GenreName { get; set; }
-
-        [Display(Name = "Borrowed Count")]
-        public int BorrowCount { get; set; }
     }
 }
