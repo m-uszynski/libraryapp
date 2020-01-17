@@ -107,5 +107,10 @@ namespace Web.Controllers
             return View(userDetailsViewModel);
         }
 
+        public JsonResult GetActiveUser()
+        {
+            var activeUsers = userService.GetActiveUser();
+            return Json(activeUsers, JsonRequestBehavior.AllowGet);
+        }
     }
 }

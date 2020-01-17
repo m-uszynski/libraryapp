@@ -111,5 +111,11 @@ namespace Web.Controllers
             var bookViewModel = bookService.GetBookById(id);
             return View(bookViewModel);
         }
+
+        public JsonResult GetBookUserCanBorrow(int id)
+        {
+            var bookUserCanBorrow = bookService.GetBookUserCanBorrow(id);
+            return Json(bookUserCanBorrow, JsonRequestBehavior.AllowGet);
+        }
     }
 }

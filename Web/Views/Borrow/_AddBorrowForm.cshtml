@@ -1,0 +1,154 @@
+﻿<div class="form-group">
+    <div id="user">
+        <span>User:</span> 
+        <select class="userSelect">
+            <option disabled selected value="-1"> -- Select user -- </option>
+        </select>
+    </div>
+    <br />
+    <div id="bookContainer">
+        <span class="bookSpan">Book:</span>
+        <select class="myselect">
+            <option disabled selected value="-1"> -- Select book -- </option>
+        </select><br />
+    </div>
+    <br />
+    <button id="addSelectBtn">Add next</button>
+    <hr />
+    <div>
+        <button type="button" id="closeBtn" class="btn btn-primary">Cancel</button>
+    </div>
+</div>
+
+<script>
+    var btn = document.getElementById("closeBtn");
+    btn.onclick = function () {
+        $("#basicModal").modal("hide");
+    }
+
+    var books = [];
+
+    // user choice handle
+    var getActiveUserActionUrl = '/User/GetActiveUser';
+    function getActiveUsers() {
+        var data = [];
+        $.ajax({
+            url: getActiveUserActionUrl,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                data = json;
+            }
+        })
+        return data;
+    }
+    var activeUsers = getActiveUsers();
+
+    var userSelect = $("#user select.userSelect");
+    for (i = 0; i < activeUsers.length; i++) {
+        userSelect.append("<option value='" + activeUsers[i].UserId + "'>" + activeUsers[i].UserName + "</option>");
+    }
+
+    $("#user").on("change", "select", function () {
+        var currentSelectUser = $(this).find("option:checked").attr("value");
+        if (currentSelectUser != -1) {
+            $(this).attr('disabled', 'disabled');
+            // get available book which user can borrow
+            var getBookWhoUserCanBorrowActionUrl = '/Book/GetBookUserCanBorrow/' + currentSelectUser;
+            $.ajax({
+                url: getBookWhoUserCanBorrowActionUrl,
+                async: false,
+                dataType: 'json',
+                success: function (json) {
+                    books = json;
+                }
+            })
+            // put available book which user can borrow to first book select
+            var firstBookSelect = $("#bookContainer select:first");
+            for (i = 0; i < books.length; i++) {
+                firstBookSelect.append("<option value='" + books[i].BookId + "'>" + books[i].Title + "</option>");
+            }
+        } 
+        
+    })
+
+    // book choices handle
+
+    var choosenOption = [];
+    var availableOption;
+
+    // add new select list button
+    var addSelectBtn = $("#addSelectBtn");
+    addSelectBtn.prop("disabled", true);
+
+    // handling for removing the last list
+    $(document).on("click", ".del", function () {
+        var option = $(this).prev('select').find('option:checked').val();
+        if (option !== '') {
+            availableOption.push($(this).prev('select').find('option:checked').clone()[0]);
+            $("#bookContainer select").siblings(".myselect")
+                .children("option[value='" + option + "']")
+                .attr("disabled", false);
+        }
+        $(this).prevUntil('span.bookSpan').prev().remove();
+        $(this).prev('select').remove();
+        if ($("#bookContainer").find(".myselect").length <= 1) $("#bookContainer select:last").after('<button class="del" disabled>Delete</button>');
+        else $("#bookContainer select:last").after('<button class="del">Delete</button>');
+        $(this).next('br').remove();
+        $(this).remove();
+        addSelectBtn.prop("disabled", false);
+    })
+
+    // handling for add the new list
+    addSelectBtn.on('click', function () {
+        $(this).prop("disabled", true);
+        $(".del").remove();
+        $("#bookContainer").append('<span class="bookSpan">Book:</span> <select class="myselect"></select><button class="del">Delete</button><br/>');
+        $("#bookContainer select").last().append("<option disabled selected value> -- select an option -- </option>");
+        for (i = 0; i < availableOption.length; i++) {
+            $("#bookContainer select").last().append(availableOption[i]);
+        }
+        for (i = 0; i < choosenOption.length; i++) {
+            $("#bookContainer select").last().append(choosenOption[i]);
+        }
+    })
+
+    // handling for a selected book from the list
+    $("#bookContainer").on("change", 'select', function () {
+        if ($('#bookContainer select').length == getSelectedValues().length) addSelectBtn.prop("disabled", false);
+
+        var currentSelectEl = $(this);
+
+        var selectedOptions = currentSelectEl.find("option:checked").not(":disabled");
+
+        var otherOptions = currentSelectEl.find("option").not(":checked").not(":disabled");
+        if (otherOptions.length <= 0) addSelectBtn.prop("disabled", true);
+
+        availableOption = otherOptions.clone().attr("disabled", false).toArray();
+        choosenOption = $("select.myselect").find("option:checked").not(":disabled").clone().attr("disabled", true).toArray();
+
+        otherOptions.each(function () {
+            var myVal = $(this).val();
+            currentSelectEl.siblings(".myselect")
+                .children("option[value='" + myVal + "']")
+                .attr("disabled", false);
+        })
+
+        selectedOptions.each(function () {
+            var valToDisable = $(this).val();
+            currentSelectEl.siblings('.myselect')
+                .children("option[value='" + valToDisable + "']")
+                .attr("disabled", true);
+        })
+    })
+
+    // function that returns a list of ids of selected books
+    function getSelectedValues() {
+        var choosenBook = [];
+        $("#bookContainer select").find("option:checked").each(function () {
+            if ($(this).attr("value") !== '') choosenBook.push(parseInt($(this).attr("value"), 10));
+        })
+        return choosenBook;
+    }
+
+</script>

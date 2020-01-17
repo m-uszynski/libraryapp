@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookToBorrowViewModel.cs" />
     <Compile Include="BookViewModel.cs" />
     <Compile Include="BorrowGridViewModel.cs" />
     <Compile Include="BorrowViewModel.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserBooksHistoryViewModel.cs" />
     <Compile Include="UserDetailsViewModel.cs" />
+    <Compile Include="UserToBorrowViewModel.cs" />
     <Compile Include="UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

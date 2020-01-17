@@ -33,5 +33,11 @@ namespace Web.Controllers
             var currentBorrows = borrowService.GetUserWhoHaveBooks();
             return Json(currentBorrows, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public PartialViewResult Create()
+        {
+            return PartialView();
+        }
     }
 }

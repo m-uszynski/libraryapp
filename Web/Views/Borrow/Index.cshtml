@@ -31,6 +31,14 @@
     </div>
 </div>
 <hr />
+<button id="addBorrow" class="btn btn-success">Add new borrow</button>
+
+<div class="modal fade"
+     id="basicModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="basicModal">
+</div>
 
 <script>
     var currentBorrowActionUrl = '/Borrow/GetCurrentBorrows';
@@ -167,6 +175,19 @@
         dataSource: {
             data: getUserWhoHaveBook(),
         }
+    });
+
+    AddModalToCreate = function () {
+        var url = '@Url.Action("Create","Borrow")'
+        return $.get(url, function (data) {
+            $("#basicModal").html(data);
+        });
+    }
+
+    $("#addBorrow").click(function () {
+        AddModalToCreate().done(function () {
+            $("#basicModal").modal("show");
+        })
     });
 
 </script>

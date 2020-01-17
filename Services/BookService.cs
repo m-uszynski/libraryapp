@@ -103,5 +103,27 @@ namespace Services
             updatedBook.ModifiedDate = DateTime.Now;
             libraryEntities.SaveChanges();
         }
+
+        public IEnumerable<BookToBorrowViewModel> GetBookUserCanBorrow(int UserId)
+        {
+            var ownedBooks = (from borrow in libraryEntities.Borrows
+                              join book in libraryEntities.Books on borrow.BookId equals book.BookId
+                              where borrow.UserId == UserId && borrow.IsReturned == false
+                              select new BookToBorrowViewModel
+                              {
+                                  BookId = book.BookId,
+                                  Title = book.Title
+                              });
+
+            var availableBooks = (from book in libraryEntities.Books
+                                  where book.Count > 0
+                                  select new BookToBorrowViewModel
+                                  {
+                                      BookId = book.BookId,
+                                      Title = book.Title
+                                  });
+                              
+            return availableBooks.Except(ownedBooks);
+        }
     }
 }
