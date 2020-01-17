@@ -95,7 +95,8 @@
         if ($("#bookContainer").find(".myselect").length <= 1) $("#bookContainer select:last").after('<button class="del" disabled>Delete</button>');
         else $("#bookContainer select:last").after('<button class="del">Delete</button>');
         $(this).next('br').remove();
-        $(this).remove();
+        //$(this).remove();
+        $("#bookContainer .del:last").remove();
         addSelectBtn.prop("disabled", false);
     })
 
