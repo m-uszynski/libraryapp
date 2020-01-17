@@ -106,6 +106,34 @@
                 field: "ToDate",
                 format: "{0:dd.MM.yyyy}",
                 encoded: false
+            },
+            {
+                command: [
+                    {
+                        name: "Return",
+                        click: function (e) {
+                            e.preventDefault();
+                            var tr = $(e.target).closest("tr");
+                            var data = this.dataItem(tr);
+                            var borrowId = data.BorrowId;
+                            //console.log("BorrowID: " + borrowId);
+                            $.ajax({
+                                url: "/Borrow/ReturnBorrow/" + borrowId,
+                                type: "POST",
+                                contentType: "application/json;charset=utf-8",
+                                success: function (result) {
+                                    if (result.success) {
+                                        reloadPage();
+                                    }
+                                    else {
+                                        alert("Error in return book!");
+                                    }
+                                }
+
+                            })
+                        }
+                    }
+                ]
             }
         ],
         sortable: false,
@@ -119,6 +147,9 @@
             schema: {
                 model: {
                     fields: {
+                        BorrowId: {
+                            type: "number"
+                        },
                         FromDate: {
                             type: "date",
                             defaultValue: null
@@ -189,5 +220,11 @@
             $("#basicModal").modal("show");
         })
     });
+
+    function reloadPage() {
+        $(document).ajaxStop(function () {
+            window.location.reload();
+        })
+    }
 
 </script>

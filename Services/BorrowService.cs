@@ -133,5 +133,19 @@ namespace Services
             books.ForEach(x => x.Count = x.Count - 1);
             libraryEntities.SaveChanges();
         }
+
+        public void ReturnBook(int borrowId)
+        {
+            var results = (from borrow in libraryEntities.Borrows
+                           join book in libraryEntities.Books on borrow.BookId equals book.BookId
+                           where borrow.BorrowId == borrowId
+                           select new { borrow, book });
+            foreach(var item in results)
+            {
+                item.borrow.IsReturned = true;
+                item.book.Count = item.book.Count + 1;
+            }
+            libraryEntities.SaveChanges();
+        }
     }
 }

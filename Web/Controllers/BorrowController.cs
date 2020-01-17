@@ -35,6 +35,13 @@ namespace Web.Controllers
             return Json(currentBorrows, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult ReturnBorrow(int id)
+        {
+            borrowService.ReturnBook(id);
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpGet]
         public PartialViewResult Create()
         {
