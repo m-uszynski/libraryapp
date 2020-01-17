@@ -1,0 +1,253 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.mobile.all.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/kendo/kendo.all.min.js"></script>
+<script src="~/Scripts/kendo/jszip.min.js"></script>
+
+<h2>Currently Borrowed Books</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="currentBookBorrowGrid"></div>
+        </div>
+    </div>
+</div>
+<hr />
+<h2>Users who currently have books</h2>
+<p>(Click row to go to return functionality)</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="currentUserBorrowGrid"></div>
+        </div>
+    </div>
+</div>
+<hr />
+<button id="addBorrow" class="btn btn-success">Add new borrow</button>
+
+<div class="modal fade"
+     id="basicModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="basicModal">
+</div>
+
+<script>
+    var currentBorrowActionUrl = '/Borrow/GetCurrentBorrows';
+    function getCurrentBorrow() {
+        var data = [];
+        $.ajax({
+            url: currentBorrowActionUrl,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                data = json;
+            }
+        });
+        return data;
+    }
+
+    var userWhoHaveBookActionUrl = '/Borrow/GetUsersWhoHaveBook';
+    function getUserWhoHaveBook() {
+        var data = [];
+        $.ajax({
+            url: userWhoHaveBookActionUrl,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                data = json;
+            }
+        });
+        return data;
+    }
+
+    $("#currentBookBorrowGrid").kendoGrid({
+        columns: [
+            {
+                title: "Title",
+                field: "Title",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "Author",
+                field: "Author",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "ISBN",
+                field: "ISBN",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "Who Borrowed?",
+                field: "WhoBorrowed",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "From Date",
+                field: "FromDate",
+                format: "{0:dd.MM.yyyy}",
+                encoded: false
+            },
+            {
+                title: "To Date",
+                field: "ToDate",
+                format: "{0:dd.MM.yyyy}",
+                encoded: false
+            },
+            {
+                command: [
+                    {
+                        name: "Return",
+                        click: function (e) {
+                            e.preventDefault();
+                            var tr = $(e.target).closest("tr");
+                            var data = this.dataItem(tr);
+                            var borrowId = data.BorrowId;
+                            //console.log("BorrowID: " + borrowId);
+                            $.ajax({
+                                url: "/Borrow/ReturnBorrow/" + borrowId,
+                                type: "POST",
+                                contentType: "application/json;charset=utf-8",
+                                success: function (result) {
+                                    if (result.success) {
+                                        reloadPage();
+                                    }
+                                    else {
+                                        alert("Error in return book!");
+                                    }
+                                }
+
+                            })
+                        }
+                    }
+                ]
+            }
+        ],
+        sortable: false,
+        filterable: false,
+        height: "250px",
+        messages: {
+            noRecords: "No records available."
+        },
+        dataSource: {
+            data: getCurrentBorrow(),
+            schema: {
+                model: {
+                    fields: {
+                        BorrowId: {
+                            type: "number"
+                        },
+                        FromDate: {
+                            type: "date",
+                            defaultValue: null
+                        },
+                        ToDate: {
+                            type: "date",
+                            defaultValue: null
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    $("#currentUserBorrowGrid").kendoGrid({
+        columns: [
+            {
+                title: "First Name",
+                field: "FirstName",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "Last Name",
+                field: "LastName",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "Email",
+                field: "Email",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "Phone",
+                field: "Phone",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "Current borrow",
+                field: "BorrowedBooksCount",
+                filterable: false,
+                encoded: true
+            }
+        ],
+        sortable: false,
+        filterable: false,
+        height: "250px",
+        selectable: "row",
+        change: function (e) {
+            var selectedRow = e.sender.dataItem(this.select());
+            var url = '@Url.Action("UserReturn", "Borrow", new { id = "__id__" })';
+            window.location.href = url.replace('__id__', selectedRow.UserId);
+        },
+        messages: {
+            noRecords: "No records available."
+        },
+        dataSource: {
+            data: getUserWhoHaveBook(),
+            schema: {
+                model: {
+                    fields: {
+                        UserId: {
+                            type: "number"
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    function onUserClick(arg) {
+        var selected = $.map(this.select(), function (item) {
+            return $(item);
+        });
+        console.log(selected);
+    }
+
+    AddModalToCreate = function () {
+        var url = '@Url.Action("Create","Borrow")'
+        return $.get(url, function (data) {
+            $("#basicModal").html(data);
+        });
+    }
+
+    $("#addBorrow").click(function () {
+        AddModalToCreate().done(function () {
+            $("#basicModal").modal("show");
+        })
+    });
+
+    function reloadPage() {
+        $(document).ajaxStop(function () {
+            window.location.reload();
+        })
+    }
+
+</script>

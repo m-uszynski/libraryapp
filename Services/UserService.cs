@@ -103,20 +103,19 @@ namespace Services
         // Get User Borrows History
         public IEnumerable<UserBooksHistoryViewModel> GetUserBorrowsHistory(int? id)
         {
-            var borrows = libraryEntities.Borrows.Where(b => b.UserId == id).Join(libraryEntities.Books,
-                borrow => borrow.BorrowId,
-                book => book.BookId,
-                (borrow, book) => new { Borrow = borrow, Book = book })
-                .Select(x => new UserBooksHistoryViewModel
-                {
-                    BookId = x.Book.BookId,
-                    Title = x.Book.Title,
-                    Author = x.Book.Author,
-                    ISBN = x.Book.ISBN,
-                    FromDate = x.Borrow.FromDate,
-                    ToDate = x.Borrow.ToDate,
-                    IsReturned = x.Borrow.IsReturned
-                }).ToList();
+            var borrows = (from borrow in libraryEntities.Borrows
+                           join book in libraryEntities.Books on borrow.BookId equals book.BookId
+                           where borrow.UserId == id
+                           select new UserBooksHistoryViewModel
+                           {
+                               BookId = book.BookId,
+                               Title = book.Title,
+                               Author = book.Author,
+                               ISBN = book.ISBN,
+                               FromDate = borrow.FromDate,
+                               ToDate = borrow.ToDate,
+                               IsReturned = borrow.IsReturned
+                           });
 
             return borrows;
         }
@@ -137,6 +136,16 @@ namespace Services
                 BookModel = GetUserOwnedBooks(id)
             };
             return userDetailsViewModel;
+        }
+
+        public IEnumerable<UserToBorrowViewModel> GetActiveUser()
+        {
+            var model =  libraryEntities.Users.Where(x => x.IsActive == true).Select(x => new UserToBorrowViewModel
+            {
+               UserId = x.UserId,
+               UserName = x.FirstName + " " + x.LastName
+            });
+            return model;
         }
     }
 }

@@ -1,0 +1,161 @@
+﻿@model Common.UserViewModel
+
+<link href="~/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.mobile.all.min.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/kendo/kendo.all.min.js"></script>
+<script src="~/Scripts/kendo/jszip.min.js"></script>
+
+
+<h1>Owned books - @Model.FirstName @Model.LastName</h1>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="ownedBooksGrid"></div>
+        </div>
+    </div>
+</div>
+<br />
+<div id="rbtn">
+    <button id="backBtn" class="btn btn-primary">Back</button>
+    <button id="returnBtn" class="btn btn-success">Return books</button>
+</div>
+<br /><br />
+<style>
+    #returnBtn{
+        float: right;
+    }
+</style>
+
+<script>
+    $("#returnBtn").attr('disabled', 'disabled');
+
+    var actionUrl = "/Borrow/GetCurrentUserBorrow/" + @Html.Raw(Json.Encode(Model.UserId));
+    function getCurrentBorrow() {
+        var data = [];
+        $.ajax({
+            url: actionUrl,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                data = json;
+            }
+        })
+        return data;
+    }
+
+    var grid = $("#ownedBooksGrid").kendoGrid({
+        columns: [
+            {
+                title: "Title",
+                field: "Title",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "Author",
+                field: "Author",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "ISBN",
+                field: "ISBN",
+                filterable: false,
+                encoded: true
+            },
+            {
+                title: "From Date",
+                field: "FromDate",
+                format: "{0:dd.MM.yyyy}",
+                encoded: false
+            },
+            {
+                title: "To Date",
+                field: "ToDate",
+                format: "{0:dd.MM.yyyy}",
+                encoded: false
+            },
+            {
+                field: "",
+                title: "",
+                template: '<input type="checkbox" class="bookcheck" />',
+                width: 40
+            }
+        ],
+        sortable: false,
+        filterable: false,
+        height: "250px",
+        messages: {
+            noRecords: "No records available."
+        },
+        dataSource: {
+            data: getCurrentBorrow(),
+            schema: {
+                model: {
+                    fields: {
+                        BorrowId: {
+                            type: "number"
+                        },
+                        FromDate: {
+                            type: "date",
+                            defaultValue: null
+                        },
+                        ToDate: {
+                            type: "date",
+                            defaultValue: null
+                        }
+                    }
+                }
+            }
+        }
+
+    }).data("kendoGrid");
+
+    function getBorrowsId(){
+        var sel = $("input:checked", grid.tbody).closest("tr");
+        var items = [];
+        $.each(sel, function (idx, row) {
+            var item = grid.dataItem(row);
+            items.push(item.BorrowId);
+        });
+        return items;
+    }
+
+    $(document).on('change', '.bookcheck', function () {
+        if ($('input[type="checkbox"]:checked').length > 0) $("#returnBtn").attr('disabled', false);
+        else $("#returnBtn").attr('disabled', 'disabled');
+    });
+
+    $(document).on('click', '#returnBtn', function () {
+        var model = {
+            BorrowsId: getBorrowsId()
+        }
+        $.ajax({
+            url: '/Borrow/ReturnBorrows',
+            type: "POST",
+            data: JSON.stringify(model),
+            contentType: "application/json;charset=utf-8",
+            success: function (result) {
+                if (result.success) {
+                    var url = '@Url.Action("Index", "Borrow")';
+                    window.location.href = url;
+                }
+                else {
+                    alert("Something went wrong!");
+                }
+            }
+        })
+    });
+
+    $(document).on('click', "#backBtn", function () {
+        var url = '@Url.Action("Index", "Borrow")';
+        window.location.href = url;
+    })
+
+</script>
