@@ -45,6 +45,8 @@
     <Compile Include="BookViewModel.cs" />
     <Compile Include="BorrowCreateViewModel.cs" />
     <Compile Include="BorrowGridViewModel.cs" />
+    <Compile Include="BorrowListViewModel.cs" />
+    <Compile Include="BorrowUserReturnViewModel.cs" />
     <Compile Include="BorrowViewModel.cs" />
     <Compile Include="DictBookGenreViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

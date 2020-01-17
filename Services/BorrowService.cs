@@ -86,6 +86,23 @@ namespace Services
             return model;
         }
 
+        public IEnumerable<BorrowUserReturnViewModel> GetCurrentUserBorrows(int userId)
+        {
+            var model = (from borrow in libraryEntities.Borrows
+                         join book in libraryEntities.Books on borrow.BookId equals book.BookId
+                         where  borrow.UserId == userId && borrow.IsReturned == false
+                         select new BorrowUserReturnViewModel {
+                             BookId = book.BookId,
+                             Author = book.Author,
+                             Title = book.Title,
+                             ISBN = book.ISBN,
+                             BorrowId = borrow.BorrowId,
+                             FromDate = borrow.FromDate,
+                             ToDate = borrow.ToDate
+                         });
+            return model;
+        }
+
         public IEnumerable<UserViewModel> GetUserWhoHaveBooks()
         {
 
@@ -140,6 +157,20 @@ namespace Services
                            join book in libraryEntities.Books on borrow.BookId equals book.BookId
                            where borrow.BorrowId == borrowId
                            select new { borrow, book });
+            foreach(var item in results)
+            {
+                item.borrow.IsReturned = true;
+                item.book.Count = item.book.Count + 1;
+            }
+            libraryEntities.SaveChanges();
+        }
+
+        public void ReturnBooks(int[] borrowsId)
+        {
+            var results = (from borrow in libraryEntities.Borrows
+                          join book in libraryEntities.Books on borrow.BookId equals book.BookId
+                          where borrowsId.Contains(borrow.BorrowId)
+                          select new { borrow, book });
             foreach(var item in results)
             {
                 item.borrow.IsReturned = true;

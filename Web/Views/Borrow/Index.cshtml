@@ -23,6 +23,7 @@
 </div>
 <hr />
 <h2>Users who currently have books</h2>
+<p>(Click row to go to return functionality)</p>
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-18 col-md-12">
@@ -76,7 +77,7 @@
                 field: "Title",
                 filterable: false,
                 encoded: true
-            }, 
+            },
             {
                 title: "Author",
                 field: "Author",
@@ -200,13 +201,35 @@
         sortable: false,
         filterable: false,
         height: "250px",
+        selectable: "row",
+        change: function (e) {
+            var selectedRow = e.sender.dataItem(this.select());
+            var url = '@Url.Action("UserReturn", "Borrow", new { id = "__id__" })';
+            window.location.href = url.replace('__id__', selectedRow.UserId);
+        },
         messages: {
             noRecords: "No records available."
         },
         dataSource: {
             data: getUserWhoHaveBook(),
+            schema: {
+                model: {
+                    fields: {
+                        UserId: {
+                            type: "number"
+                        }
+                    }
+                }
+            }
         }
     });
+
+    function onUserClick(arg) {
+        var selected = $.map(this.select(), function (item) {
+            return $(item);
+        });
+        console.log(selected);
+    }
 
     AddModalToCreate = function () {
         var url = '@Url.Action("Create","Borrow")'

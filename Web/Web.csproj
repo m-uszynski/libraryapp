@@ -264,6 +264,7 @@
     <Content Include="Views\Borrow\Index.cshtml" />
     <Content Include="Views\Borrow\Create.cshtml" />
     <Content Include="Views\Borrow\_AddBorrowForm.cshtml" />
+    <Content Include="Views\Borrow\UserReturn.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

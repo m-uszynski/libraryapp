@@ -11,10 +11,12 @@ namespace Web.Controllers
     public class BorrowController : Controller
     {
         private BorrowService borrowService;
+        private UserService userService;
 
         public BorrowController()
         {
             borrowService = new BorrowService();
+            userService = new UserService();
         }
 
         // GET: Borrow
@@ -42,6 +44,19 @@ namespace Web.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult ReturnBorrows(BorrowListViewModel model)
+        {
+            borrowService.ReturnBooks(model.BorrowsId);
+            return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetCurrentUserBorrow(int id)
+        {
+            var model = borrowService.GetCurrentUserBorrows(id);
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpGet]
         public PartialViewResult Create()
         {
@@ -66,6 +81,12 @@ namespace Web.Controllers
 
             borrowService.InsertBorrows(model);
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult UserReturn(int id)
+        {
+            var model = userService.GetUserById(id);
+            return View(model);
         }
     }
 }
