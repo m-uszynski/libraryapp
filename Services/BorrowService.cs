@@ -62,5 +62,52 @@ namespace Services
             });
             return borrowModel;
         }
+
+        public IEnumerable<BorrowGridViewModel> GetCurrentBookBorrows()
+        {
+            var model = (from borrow in libraryEntities.Borrows
+                         join book in libraryEntities.Books on borrow.BookId equals book.BookId
+                         join user in libraryEntities.Users on borrow.UserId equals user.UserId
+                         where borrow.IsReturned == false
+                         select new BorrowGridViewModel
+                         {
+                             BookId = book.BookId,
+                             Author = book.Author,
+                             Title = book.Title,
+                             ISBN = book.ISBN,
+                             BorrowId = borrow.BorrowId,
+                             FromDate = borrow.FromDate,
+                             ToDate = borrow.ToDate,
+                             UserId = user.UserId,
+                             WhoBorrowed = user.FirstName+" "+user.LastName,
+                             Email = user.Email,
+                             Phone = user.Phone
+                         }).ToList();
+            return model;
+        }
+
+        public IEnumerable<UserViewModel> GetUserWhoHaveBooks()
+        {
+
+            var model = (from borrow in libraryEntities.Borrows
+                         where borrow.IsReturned == false
+                         group borrow by borrow.UserId into x
+                         join user in libraryEntities.Users on x.FirstOrDefault().UserId equals user.UserId
+                         select new UserViewModel
+                         {
+                             UserId = user.UserId,
+                             FirstName = user.FirstName,
+                             LastName = user.LastName,
+                             BirthDate = user.BirthDate,
+                             Email = user.Email,
+                             Phone = user.Phone,
+                             AddDate = user.AddDate,
+                             ModifiedDate = user.ModifiedDate,
+                             IsActive = user.IsActive,
+                             BorrowedBooksCount = user.Borrows.Count(b=>b.IsReturned==false)
+                         }).ToList();
+
+            return model;
+        }
     }
 }

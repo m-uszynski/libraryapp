@@ -160,6 +160,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BookController.cs" />
+    <Compile Include="Controllers\BorrowController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
@@ -260,6 +261,7 @@
     <Content Include="Views\Book\_AddEditBookForm.cshtml" />
     <Content Include="Views\Book\Edit.cshtml" />
     <Content Include="Views\Book\Details.cshtml" />
+    <Content Include="Views\Borrow\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
