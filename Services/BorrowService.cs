@@ -109,5 +109,29 @@ namespace Services
 
             return model;
         }
+
+        public void InsertBorrows(BorrowCreateViewModel model)
+        {
+            // Insert Borrow
+            libraryEntities.Configuration.AutoDetectChangesEnabled = false;
+            foreach(var book in model.ChoosenBooks)
+            {
+                libraryEntities.Borrows.Add(new Borrow
+                {
+                    UserId = model.UserId,
+                    BookId = book,
+                    FromDate = DateTime.Now,
+                    ToDate = model.ToDate,
+                    IsReturned = false
+                });
+            }
+            libraryEntities.SaveChanges();
+            libraryEntities.Configuration.AutoDetectChangesEnabled = true;
+
+            // Decrement count
+            var books = libraryEntities.Books.Where(x => model.ChoosenBooks.Contains(x.BookId)).ToList();
+            books.ForEach(x => x.Count = x.Count - 1);
+            libraryEntities.SaveChanges();
+        }
     }
 }

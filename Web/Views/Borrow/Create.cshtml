@@ -16,7 +16,42 @@
 </div>
 
 <script>
+    $(function () {
+        $("#form").on('submit', 'form', function (event) {
+            event.preventDefault();
 
+            var jsonData = {
+                UserId: getSelectedUser(),
+                ChoosenBooks: getSelectedValues(),
+                ToDate: $("#toDate").val()
+            }
+
+            $.ajax({
+                url: "/Borrow/Create",
+                type: "POST",
+                data: JSON.stringify(jsonData),
+                contentType: "application/json;charset=utf-8",
+                success: function (result) {
+                    if (result.success) {
+                        $("#basicModal").modal("hide");
+                        reloadPage();
+                    }
+                    else {
+                        $("#validateError").empty();
+                        result.errors.forEach(function (error) {
+                            $("#validateError").append('<li>' + error + '</li>')
+                        });
+                    }
+                }
+            })
+        })
+    });
+
+    function reloadPage() {
+        $(document).ajaxStop(function () {
+            window.location.reload();
+        });
+    }
 </script>
 
 <style>
