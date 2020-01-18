@@ -1,0 +1,79 @@
+﻿
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="mostActiveUsersGrid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    $("#mostActiveUsersGrid").kendoGrid({
+        dataSource: {
+            type: "json",
+            transport: {
+                read: function (option) {
+                    $.ajax({
+                        url: 'http://localhost:50824/Report/GetMostActiveUsers',
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        async: loadAsync,
+                        data: {
+                            skip: option.data.skip,
+                            take: option.data.take,
+                            pageSize: option.data.pageSize,
+                            filter: JSON.stringify(option.data.filter)
+                        },
+                        success: function (result) {
+                            option.success(result);
+                        },
+                        error: function (result) {
+                            option.error(result);
+                        }
+
+                    })
+                }
+            },
+            schema: {
+                data: function (response) {
+                    return response.data;
+                },
+                total: function (response) {
+                    return response.total;
+                }
+            },
+            pageSize: 5,
+            serverPaging: true,
+            serverFiltering: true,
+        },
+        filterable: {
+            extra: false,
+            operators: {
+                string: {
+                    startswith: "Starts with",
+                }
+            }
+        },
+        pageable: true,
+        columns: [
+            {
+                field: "FirstName",
+                title: "First Name",
+                filterable: false
+            },
+            {
+                field: "LastName",
+                title: "Last Name"
+            },
+            {
+                field: "BorrowCount",
+                title: "Borrow Count",
+                filterable: false
+            }
+        ]
+    })
+
+</script>

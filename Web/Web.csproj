@@ -161,7 +161,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\BorrowController.cs" />
+    <Compile Include="Controllers\DictBookGenreController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -265,8 +267,14 @@
     <Content Include="Views\Borrow\Create.cshtml" />
     <Content Include="Views\Borrow\_AddBorrowForm.cshtml" />
     <Content Include="Views\Borrow\UserReturn.cshtml" />
+    <Content Include="Views\Report\Index.cshtml" />
+    <Content Include="Views\Report\_MostActiveUsersGrid.cshtml" />
+    <Content Include="Views\Report\_MostOftenBorrowedBooksGrid.cshtml" />
+    <Content Include="Views\Report\_MostOftenBorrowedBooksFilter.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\DictBookGenre\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
   </ItemGroup>

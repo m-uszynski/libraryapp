@@ -18,7 +18,7 @@ namespace Services
         }
 
         // Get All Users
-        public IQueryable<UserViewModel> GetUsers()
+        public IEnumerable<UserViewModel> GetUsers()
         {
             var userModel = libraryEntities.Users.Include("Borrows")
                 .Select(x => new UserViewModel {

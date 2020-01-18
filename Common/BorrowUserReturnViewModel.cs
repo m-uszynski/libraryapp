@@ -16,8 +16,5 @@ namespace Common
         public int BorrowId { get; set; }
         public System.DateTime FromDate { get; set; }
         public System.DateTime ToDate { get; set; }
-
-        //public int UserId { get; set; }
-        //public string WhoBorrowed { get; set; }
     }
 }
