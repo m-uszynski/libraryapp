@@ -17,14 +17,15 @@ namespace Services
             libraryEntities = new LibraryEntities();
         }
 
-        public IQueryable<DictBookGenreViewModel> getDictBookGenres()
+        public IEnumerable<DictBookGenreViewModel> getDictBookGenres()
         {
-            IQueryable<DictBookGenre> genres = libraryEntities.DictBookGenres;
-            var dictBookGenreModel = genres.Select(x => new DictBookGenreViewModel {
-                BookGenreId = x.BookGenreId,
-                Name = x.Name
-            });
-            return dictBookGenreModel;
+            var model = (from genres in libraryEntities.DictBookGenres
+                         select new DictBookGenreViewModel {
+                             BookGenreId = genres.BookGenreId,
+                             Name = genres.Name.TrimEnd()
+                         });
+
+            return model;
         }
     }
 }

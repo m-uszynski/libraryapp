@@ -1,5 +1,76 @@
-﻿<h6>Filter</h6>
-<input id="text" class="k-textbox filterForm" placeholder="Enter the title" />
-<input id="fromdate" class="filterForm" />
-<input id="todate" class="filterForm" />
-<button id="resetFilterBtn" class="btn btn-primary">Reset filter</button>
+﻿<div id="bookFilter">
+    <input id="text" class="k-textbox filterForm" placeholder="Enter the title" />
+    <input id="fromdate" class="filterForm" placeholder="From Date"/>
+    <input id="todate" class="filterForm" placeholder="To Date"/>
+    <div id="genreDropDownList"></div>
+    <button id="resetFilterBtn" class="btn btn-primary">Reset filter</button>
+</div>
+
+<style>
+    #bookFilter{
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<script>
+
+    // Genre DropDownList
+    $("#genreDropDownList").kendoComboBox({
+        minLength: 1,
+        filter: 'contains',
+        dataTextField: "Name",
+        dataValueField: "BookGenreId",
+        dataSource: {
+            type: "json",
+            serverFiltering: false,
+            transport: {
+                read: "/DictBookGenre/GetBookDictGenre"
+            }
+        }
+    })
+
+    // Placeholder to Genre DropDownList
+    $("#genreDropDownList").data("kendoComboBox").input.attr("placeholder", "Genre");
+
+    // Data pickers
+    $("#fromdate").kendoDatePicker({
+        format: "yyyy-MM-dd"
+    })
+
+    $("#todate").kendoDatePicker({
+        format: "yyyy-MM-dd"
+    })
+
+    // Reset button
+    $("#resetFilterBtn").click(function () {
+        $("#text").val('');
+        $('.filterForm :input').val('');
+        $("#genreDropDownList").data("kendoComboBox").value(null);
+        refreshTable();
+    });
+
+    // Change values events
+    $("#text").change(function (ev) {
+        refreshTable();
+    })
+
+    $("#fromdate").change(function () {
+        refreshTable();
+    })
+
+    $("#todate").change(function () {
+        refreshTable();
+    })
+
+    $("#genreDropDownList").change(function () {
+        refreshTable();
+    })
+
+    // Refresh data in grid
+    function refreshTable() {
+        var g = $("#mostOftenBooksGrid").data('kendoGrid');
+        g.dataSource.read();
+        g.refresh();
+    }
+</script>

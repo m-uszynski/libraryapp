@@ -161,6 +161,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BookController.cs" />
     <Compile Include="Controllers\BorrowController.cs" />
+    <Compile Include="Controllers\DictBookGenreController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -193,7 +194,6 @@
     <Content Include="Content\kendo\kendo.default.min.css" />
     <Content Include="Content\kendo\kendo.mobile.all.min.css" />
     <Content Include="Content\kendo\kendo.rtl.min.css" />
-    <Content Include="Content\test.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -272,7 +272,9 @@
     <Content Include="Views\Report\_MostOftenBorrowedBooksGrid.cshtml" />
     <Content Include="Views\Report\_MostOftenBorrowedBooksFilter.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\DictBookGenre\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
   </ItemGroup>

@@ -19,8 +19,8 @@ namespace Services
 
         public IEnumerable<BorrowViewModel> GetUserBorrowsHistory(int? UserId)
         {
-            var borrows = libraryEntities.Borrows.Where(b => b.UserId == UserId);
-            var borrowModel = borrows.Select(x => new BorrowViewModel
+            var model = libraryEntities.Borrows.Where(b => b.UserId == UserId).Select(
+                x => new BorrowViewModel
             {
                 BorrowId = x.BorrowId,
                 UserId = x.UserId,
@@ -30,13 +30,13 @@ namespace Services
                 IsReturned = x.IsReturned,
                 WhoBorrow = x.User.FirstName+" "+x.User.LastName
             });
-            return borrowModel;
+            return model;
         }
 
         public IEnumerable<BorrowViewModel> GetBorrowsInBook(int bookId)
         {
-            var borrows = libraryEntities.Borrows.Where(b => b.BookId == bookId);
-            var borrowModel = borrows.Select(x => new BorrowViewModel {
+            var model = libraryEntities.Borrows.Where(b => b.BookId == bookId).Select(
+                x => new BorrowViewModel {
                 BorrowId = x.BorrowId,
                 UserId = x.UserId,
                 BookId = x.BookId,
@@ -45,13 +45,13 @@ namespace Services
                 IsReturned = x.IsReturned,
                 WhoBorrow = x.User.FirstName + " " + x.User.LastName
             });
-            return borrowModel;
+            return model;
         }
 
         public IEnumerable<BorrowViewModel> GetCurrentBorrowsInBook(int bookId)
         {
-            var borrows = libraryEntities.Borrows.Where(b => b.BookId == bookId && b.IsReturned == false);
-            var borrowModel = borrows.Select(x => new BorrowViewModel {
+            var model = libraryEntities.Borrows.Where(b => b.BookId == bookId && b.IsReturned == false).Select(
+                x => new BorrowViewModel {
                 BorrowId = x.BorrowId,
                 UserId = x.UserId,
                 BookId = x.BookId,
@@ -60,7 +60,7 @@ namespace Services
                 IsReturned = x.IsReturned,
                 WhoBorrow = x.User.FirstName + " " + x.User.LastName
             });
-            return borrowModel;
+            return model;
         }
 
         public IEnumerable<BorrowGridViewModel> GetCurrentBookBorrows()
