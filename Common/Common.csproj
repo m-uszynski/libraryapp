@@ -50,6 +50,8 @@
     <Compile Include="BorrowViewModel.cs" />
     <Compile Include="DictBookGenreViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportBooksViewModel.cs" />
+    <Compile Include="ReportUserViewModel.cs" />
     <Compile Include="UserBooksHistoryViewModel.cs" />
     <Compile Include="UserDetailsViewModel.cs" />
     <Compile Include="UserToBorrowViewModel.cs" />

@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Content/kendo/kendo.common.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.default.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.rtl.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/kendo/kendo.mobile.all.min.css" rel="stylesheet" />
+
+@*<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/kendo/kendo.all.min.js"></script>
+<script src="~/Scripts/kendo/jszip.min.js"></script>*@
+
+<script>
+    var loadAsync = false;
+
+    $(document).ready(function () {
+        loadAsync = true;
+    })
+</script>
+
+<h2>Report</h2>
+<hr />
+@Html.Partial("_MostOftenBorrowedBooksFilter")
+@Html.Partial("_MostOftenBorrowedBooksGrid")
+<hr />
+@Html.Partial("_MostActiveUsersGrid")
+

@@ -1,0 +1,212 @@
+﻿
+
+<h2>Books most often borrowed</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-18 col-md-12">
+            <div id="mostOftenBooksGrid"></div>
+        </div>
+    </div>
+</div>
+
+@*<input id="text" class="k-textbox filterForm" placeholder="Enter the title"/>
+<input id="fromdate" class="filterForm" />
+<input id="todate" class="filterForm"/>
+<button id="resetFilterBtn" class="btn btn-primary">Reset filter</button>*@
+
+<script>
+
+    $(document).ready(function () {
+        $("#mostOftenBooksGrid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: function (option) {
+                        $.ajax({
+                            url: 'http://localhost:50824/Report/GetMostOftenBooks',
+                            dataType: 'json',
+                            contentType: "application/json; charset=utf-8",
+                            async: loadAsync,
+                            data: {
+                                skip: option.data.skip,
+                                take: option.data.take,
+                                pageSize: option.data.pageSize,
+                                title: $("#text").val() + "",
+                                fromdate: $("#fromdate").val()+"",
+                                todate: $("#todate").val()+"",
+                            },
+                            success: function (result) {
+                                option.success(result);
+                            },
+                            error: function (result) {
+                                option.error(result);
+                            }
+                        })
+                    }
+                },
+                schema: {
+                    data: function (response) {
+                        return response.data;
+                    },
+                    total: function (response) {
+                        return response.total;
+                    }
+                },
+                pageSize: 5,
+                serverPaging: true,
+                //serverFiltering: true,
+            },
+            filterable: false,
+            pageable: true,
+            columns: [
+                {
+                    field: "Title",
+                    title: "Title",
+                    filterable: false
+                },
+                {
+                    field: "Author",
+                    title: "Author",
+                    filterable: false
+                },
+                {
+                    field: "BorrowCount",
+                    title: "Borrow Count",
+                    filterable: false
+                }
+            ]
+        })
+
+        $("#text").change(function (ev) {
+            var g = $("#mostOftenBooksGrid").data('kendoGrid');
+            g.dataSource.read();
+            g.refresh();
+        })
+
+        $("#fromdate").change(function () {
+            var g = $("#mostOftenBooksGrid").data('kendoGrid');
+            g.dataSource.read();
+            g.refresh();
+        })
+
+        $("#todate").change(function () {
+            var g = $("#mostOftenBooksGrid").data('kendoGrid');
+            g.dataSource.read();
+            g.refresh();
+        })
+
+        $("#resetFilterBtn").click(function () {
+            $("#text").val('');
+            $('.filterForm :input').val('');
+            refreshTable();
+            //$("#mostOftenBooksGrid").data("kendoGrid").dataSource.filter({});
+        });
+
+        $("#fromdate").kendoDatePicker({
+            format: "yyyy-MM-dd"
+        })
+
+        $("#todate").kendoDatePicker({
+            format: "yyyy-MM-dd"
+        })
+
+        function refreshTable() {
+            var g = $("#mostOftenBooksGrid").data('kendoGrid');
+            g.dataSource.read();
+            g.refresh();
+        }
+    })
+</script>
+
+@*<script src="https://demos.telerik.com/kendo-ui/content/shared/js/products.js"></script>
+<div id="example">
+    <div id="grid"></div>
+    <div id="filters"><input id="ddl" /> <input id="text" type="text" class="k-textbox" placeholder="Filter by name" /></div>
+    <script>
+
+        $(document).ready(function () {
+            var dataSource = new kendo.data.DataSource({
+                pageSize: 20,
+                data: products,
+                autoSync: true,
+                schema: {
+                    model: {
+                        id: "ProductID",
+                        fields: {
+                            ProductID: { editable: false, nullable: true },
+                            ProductName: { validation: { required: true } },
+                            Category: { defaultValue: { CategoryID: 1, CategoryName: "Beverages" } },
+                            UnitPrice: { type: "number", validation: { required: true, min: 1 } }
+                        }
+                    }
+                }
+            });
+
+            $("#grid").kendoGrid({
+                dataSource: dataSource,
+                pageable: true,
+                height: 550,
+                toolbar: ["create"],
+                columns: [
+                    { field: "ProductName", title: "Product Name" },
+                    { field: "Category", title: "Category", width: "180px", editor: categoryDropDownEditor, template: "#=Category.CategoryName#" },
+                    { field: "UnitPrice", title: "Unit Price", format: "{0:c}", width: "130px" },
+                    { command: "destroy", title: " ", width: "150px" }],
+                editable: true
+            });
+
+            $('#ddl').kendoDropDownList({
+                autoBind: false,
+                optionLabel: 'Select Category',
+                dataTextField: "CategoryName",
+                dataValueField: "CategoryID",
+                dataSource: {
+                    type: "odata",
+                    transport: {
+                        read: "//demos.telerik.com/kendo-ui/service/Northwind.svc/Categories"
+                    }
+                },
+                change: function (e) {
+                    var grid = $('#grid').data('kendoGrid');
+                    var field = 'CategoryID';
+                    var operator = 'eq';
+                    var value = e.sender.value();
+
+                    grid.dataSource.filter({
+                        field: field,
+                        operator: operator,
+                        value: value
+                    });
+                }
+            });
+            $('#text').change(function (ev) {
+                var grid = $('#grid').data('kendoGrid');
+                var field = 'ProductName';
+                var operator = 'contains';
+                var value = this.value;
+                grid.dataSource.filter({
+                    field: field,
+                    operator: operator,
+                    value: value
+                });
+            });
+        });
+
+        function categoryDropDownEditor(container, options) {
+            $('<input required name="' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataTextField: "CategoryName",
+                    dataValueField: "CategoryID",
+                    dataSource: {
+                        type: "odata",
+                        transport: {
+                            read: "//demos.telerik.com/kendo-ui/service/Northwind.svc/Categories"
+                        }
+                    }
+                });
+        }
+
+    </script>
+</div>*@
