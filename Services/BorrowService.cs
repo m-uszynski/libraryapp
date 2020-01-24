@@ -17,22 +17,6 @@ namespace Services
             this.libraryEntities = new LibraryEntities();
         }
 
-        public IEnumerable<BorrowViewModel> GetUserBorrowsHistory(int? UserId)
-        {
-            var model = libraryEntities.Borrows.Where(b => b.UserId == UserId).Select(
-                x => new BorrowViewModel
-            {
-                BorrowId = x.BorrowId,
-                UserId = x.UserId,
-                BookId = x.BookId,
-                FromDate = x.FromDate,
-                ToDate = x.ToDate,
-                IsReturned = x.IsReturned,
-                WhoBorrow = x.User.FirstName+" "+x.User.LastName
-            });
-            return model;
-        }
-
         public IEnumerable<BorrowViewModel> GetBorrowsInBook(int bookId)
         {
             var model = libraryEntities.Borrows.Where(b => b.BookId == bookId).Select(
@@ -109,7 +93,7 @@ namespace Services
             var model = (from borrow in libraryEntities.Borrows
                          where borrow.IsReturned == false
                          group borrow by borrow.UserId into x
-                         join user in libraryEntities.Users on x.FirstOrDefault().UserId equals user.UserId
+                         join user in libraryEntities.Users on x.Key equals user.UserId
                          select new UserViewModel
                          {
                              UserId = user.UserId,
@@ -129,11 +113,10 @@ namespace Services
 
         public void InsertBorrows(BorrowCreateViewModel model)
         {
-            // Insert Borrow
-            libraryEntities.Configuration.AutoDetectChangesEnabled = false;
+            IList<Borrow> newBorrows = new List<Borrow>();
             foreach(var book in model.ChoosenBooks)
             {
-                libraryEntities.Borrows.Add(new Borrow
+                newBorrows.Add(new Borrow
                 {
                     UserId = model.UserId,
                     BookId = book,
@@ -142,10 +125,9 @@ namespace Services
                     IsReturned = false
                 });
             }
+            libraryEntities.Borrows.AddRange(newBorrows);
             libraryEntities.SaveChanges();
-            libraryEntities.Configuration.AutoDetectChangesEnabled = true;
 
-            // Decrement count
             var books = libraryEntities.Books.Where(x => model.ChoosenBooks.Contains(x.BookId)).ToList();
             books.ForEach(x => x.Count = x.Count - 1);
             libraryEntities.SaveChanges();
@@ -153,15 +135,14 @@ namespace Services
 
         public void ReturnBook(int borrowId)
         {
-            var results = (from borrow in libraryEntities.Borrows
+            var result = (from borrow in libraryEntities.Borrows
                            join book in libraryEntities.Books on borrow.BookId equals book.BookId
                            where borrow.BorrowId == borrowId
-                           select new { borrow, book });
-            foreach(var item in results)
-            {
-                item.borrow.IsReturned = true;
-                item.book.Count = item.book.Count + 1;
-            }
+                           select new { borrow, book }).FirstOrDefault();
+
+            result.borrow.IsReturned = true;
+            result.book.Count = result.book.Count + 1;
+
             libraryEntities.SaveChanges();
         }
 

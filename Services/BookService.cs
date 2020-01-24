@@ -57,41 +57,6 @@ namespace Services
             return model;
         }
 
-        //public IEnumerable<BookViewModel> GetOwnedBooksByUserId(int? userId)
-        //{
-        //    //var books = libraryEntities.Books.Where(x => x.Borrows.Any(y => y.UserId == userId && y.IsReturned == false));   
-        //    //var bookModel = books.Select(x => new BookViewModel {
-        //    //    BookId = x.BookId,
-        //    //    Author = x.Author,
-        //    //    Title = x.Title,
-        //    //    ReleaseDate = x.ReleaseDate,
-        //    //    ISBN = x.ISBN,
-        //    //    BookGenreId = x.BookGenreId,
-        //    //    Count = x.Count,
-        //    //    AddDate = x.AddDate,
-        //    //    ModifiedDate = x.ModifiedDate,
-        //    //    GenreName = libraryEntities.DictBookGenres.Where(b=>b.BookGenreId==x.BookGenreId).FirstOrDefault().Name
-        //    //});
-        //    var model = (from borrow in libraryEntities.Borrows
-        //                 join book in libraryEntities.Books on borrow.BookId equals book.BookId
-        //                 join genres in libraryEntities.DictBookGenres on book.BookGenreId equals genres.BookGenreId
-        //                 where borrow.UserId == userId && borrow.IsReturned == false
-        //                 select new BookViewModel
-        //                 {
-        //                     BookId = book.BookId,
-        //                     Author = book.Author,
-        //                     Title = book.Title,
-        //                     ReleaseDate = book.ReleaseDate,
-        //                     ISBN = book.ISBN,
-        //                     BookGenreId = book.BookGenreId,
-        //                     Count = book.Count,
-        //                     AddDate = book.AddDate,
-        //                     ModifiedDate = book.ModifiedDate,
-        //                     GenreName = genres.Name
-        //                 });
-        //    return model;
-        //}
-
         public void InsertBook(BookViewModel book)
         {
             Book newBook = new Book
