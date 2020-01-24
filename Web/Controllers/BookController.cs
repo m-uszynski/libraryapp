@@ -77,7 +77,7 @@ namespace Web.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.genres = dictBookGenreService.getDictBookGenres();
-                return PartialView("_AddEditBookForm", bookViewModel);
+                return PartialView("_AddBookForm", bookViewModel);
             }
 
             bookService.InsertBook(bookViewModel);
@@ -98,7 +98,7 @@ namespace Web.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.genres = dictBookGenreService.getDictBookGenres();
-                return PartialView("_AddEditBookForm", bookViewModel);
+                return PartialView("_EditBookForm", bookViewModel);
             }
 
             bookService.UpdateBook(bookViewModel);

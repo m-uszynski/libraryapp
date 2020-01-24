@@ -1,0 +1,76 @@
+﻿@model Common.BookViewModel
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        <div class="form-group" hidden>
+            @Html.EditorFor(model => model.BookId, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Author, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Author, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ReleaseDate, htmlAttributes: new { @class = "control-label col-md-2"})
+            <div class="col-md-10">
+                <input type="text" id="ReleaseDate"/>
+                @Html.ValidationMessageFor(model => model.ReleaseDate, "", new { @class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ISBN, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ISBN, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ISBN, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.BookGenreId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.BookGenreId, new SelectList(ViewContext.Controller.ViewBag.genres, "BookGenreId", "Name"), htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.ValidationMessageFor(model => model.BookGenreId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Count, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Count, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Count, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group" hidden>
+            @Html.LabelFor(model => model.AddDate)
+            @Html.EditorFor(model => model.AddDate)
+            @Html.ValidationMessageFor(model => model.AddDate)
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Add" class="btn btn-success"/>
+                <button type="button" id="closeBtn" class="btn btn-primary">Cancel</button>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    var btn = document.getElementById("closeBtn");
+
+    btn.onclick = function () {
+        $("#basicModal").modal("hide");
+    }
+
+    $("#ReleaseDate").kendoDatePicker({
+        format: "yyyy-MM-dd"
+    });
+</script>
