@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common;
+using Newtonsoft.Json;
 using Services;
 using System;
 using System.Collections.Generic;
@@ -47,19 +48,6 @@ namespace Web.Controllers
 
             var pageBooks = reportService.GetPageableMostOftenBorrowedBooksWithFilter(skip, take, pageSize, title, fromdate, todate, genreid, out totalBookCount);
             return Json(new { total = totalBookCount, data = pageBooks }, JsonRequestBehavior.AllowGet);
-        }
-
-        class FilterContainer
-        {
-            public List<FilterDescription> filters { get; set; }
-            public string logic { get; set; }
-        }
-
-        class FilterDescription
-        {
-            public string @operator { get; set; }
-            public string field { get; set; }
-            public string value { get; set; }
         }
 
     }
