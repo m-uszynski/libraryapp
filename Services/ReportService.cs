@@ -73,7 +73,7 @@ namespace Services
                              BorrowCount = x.Count()
                          });
 
-            if (String.IsNullOrEmpty(title)) model = model.Where(x => x.Title.Contains(title));
+            if (!String.IsNullOrEmpty(title)) model = model.Where(x => x.Title.Contains(title));
             if (genreid != null) model = model.Where(x => x.GenreId == genreid);
 
             var finalModel = model.OrderByDescending(x => x.BorrowCount);

@@ -27,7 +27,7 @@ namespace Web.Controllers
         {
             int totalUserCount;
 
-            if (filter != null && filter != "" && filter != "null")
+            if (!String.IsNullOrEmpty(filter) && filter != "null")
             {
                 var filterLastNameValue = JsonConvert.DeserializeObject<FilterContainer>(filter).filters.FirstOrDefault().value;
                 if(filterLastNameValue != null)
@@ -41,17 +41,11 @@ namespace Web.Controllers
             return Json(new { total = totalUserCount, data = pageUser }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetMostOftenBooks(int skip, int take, int pageSize, string title, string fromdate, string todate, int? genreid)
+        public JsonResult GetMostOftenBooks(int skip, int take, int pageSize, string title, DateTime? fromdate, DateTime? todate, int? genreid)
         {
             int totalBookCount;
 
-            DateTime temp;
-            DateTime? FromDate = null;
-            DateTime? ToDate = null;
-            FromDate = DateTime.TryParse(fromdate, out temp) ? temp : (DateTime?)null;
-            ToDate = DateTime.TryParse(todate, out temp) ? temp : (DateTime?)null;
-
-            var pageBooks = reportService.GetPageableMostOftenBorrowedBooksWithFilter(skip, take, pageSize, title, FromDate, ToDate, genreid, out totalBookCount);
+            var pageBooks = reportService.GetPageableMostOftenBorrowedBooksWithFilter(skip, take, pageSize, title, fromdate, todate, genreid, out totalBookCount);
             return Json(new { total = totalBookCount, data = pageBooks }, JsonRequestBehavior.AllowGet);
         }
 

@@ -23,8 +23,8 @@
                                 take: option.data.take,
                                 pageSize: option.data.pageSize,
                                 title: $("#text").val() + "",
-                                fromdate: $("#fromdate").val()+"",
-                                todate: $("#todate").val() + "",
+                                fromdate: getFromDate($("#fromdate").val()).toJSON(),
+                                todate: getFromDate($("#todate").val()).toJSON(),
                                 genreid: $("#genreDropDownList").val()
                             },
                             success: function (result) {
@@ -73,5 +73,11 @@
                 }
             ]
         })
+
+    function getFromDate(date) {
+        var fromDate = date.split("/");
+        var dateToSend = new Date(fromDate[0] + "/" + fromDate[1] + "/" + fromDate[2]);
+        return dateToSend;
+    }
 
 </script>
