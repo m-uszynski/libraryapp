@@ -15,7 +15,6 @@
 
 <script>
 
-    // Genre DropDownList
     $("#genreDropDownList").kendoComboBox({
         minLength: 1,
         filter: 'contains',
@@ -30,10 +29,8 @@
         }
     })
 
-    // Placeholder to Genre DropDownList
     $("#genreDropDownList").data("kendoComboBox").input.attr("placeholder", "Genre");
 
-    // Data pickers
     $("#fromdate").kendoDatePicker({
         format: "yyyy/MM/dd"
     })
@@ -42,7 +39,6 @@
         format: "yyyy/MM/dd"
     })
 
-    // Reset button
     $("#resetFilterBtn").click(function () {
         $("#text").val('');
         $('.filterForm :input').val('');
@@ -50,7 +46,6 @@
         refreshTable();
     });
 
-    // Change values events
     $("#text").change(function (ev) {
         refreshTable();
     })
@@ -67,7 +62,6 @@
         refreshTable();
     })
 
-    // Refresh data in grid
     function refreshTable() {
         var g = $("#mostOftenBooksGrid").data('kendoGrid');
         g.dataSource.read();

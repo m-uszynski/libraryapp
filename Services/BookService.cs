@@ -41,7 +41,7 @@ namespace Services
         public BookViewModel GetBookById(int bookId)
         {
             var book = libraryEntities.Books.Find(bookId);
-            BookViewModel model = new BookViewModel
+            var model = new BookViewModel
             {
                 BookId = book.BookId,
                 Author = book.Author,
@@ -59,7 +59,7 @@ namespace Services
 
         public void InsertBook(BookViewModel book)
         {
-            Book newBook = new Book
+            var newBook = new Book
             {
                 Title = book.Title,
                 Author = book.Author,
@@ -75,7 +75,7 @@ namespace Services
 
         public void UpdateBook(BookViewModel book)
         {
-            Book updatedBook = libraryEntities.Books.Find(book.BookId);
+            var updatedBook = libraryEntities.Books.Find(book.BookId);
             updatedBook.Title = book.Title;
             updatedBook.Author = book.Author;
             updatedBook.ReleaseDate = book.ReleaseDate;

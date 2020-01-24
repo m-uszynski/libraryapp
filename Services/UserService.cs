@@ -17,7 +17,6 @@ namespace Services
             this.libraryEntities = new LibraryEntities();
         }
 
-        // Get All Users
         public IEnumerable<UserViewModel> GetUsers()
         {
             var userModel = libraryEntities.Users.Include("Borrows")
@@ -36,10 +35,9 @@ namespace Services
             return userModel;
         }
 
-        // Insert User
         public void InsertUser(UserViewModel user)
         {
-            User newUser = new User
+            var newUser = new User
             {
                 UserId = user.UserId,
                 FirstName = user.FirstName,
@@ -55,13 +53,12 @@ namespace Services
             libraryEntities.SaveChanges();
         }
 
-        // Get User by Id
         public UserViewModel GetUserById(int? UserId)
         {
             var user = libraryEntities.Users.Find(UserId);
             if (user == null) return null;
 
-            UserViewModel searchedUser = new UserViewModel
+            var searchedUser = new UserViewModel
             {
                 UserId = user.UserId,
                 FirstName = user.FirstName,
@@ -77,7 +74,6 @@ namespace Services
             return searchedUser;
         }
 
-        // Update User
         public void UpdateUser(UserViewModel user)
         {
             var updatedUser = libraryEntities.Users.Find(user.UserId);
@@ -92,15 +88,13 @@ namespace Services
             libraryEntities.SaveChanges();
         }
 
-        // Soft delete User
         public void DeleteUser(int id)
         {
-            User deletedUser = libraryEntities.Users.Find(id);
+            var deletedUser = libraryEntities.Users.Find(id);
             deletedUser.IsActive = false;
             libraryEntities.SaveChanges();
         }
 
-        // Get User Borrows History
         public IEnumerable<UserBooksHistoryViewModel> GetUserBorrowsHistory(int? id)
         {
             var borrows = (from borrow in libraryEntities.Borrows
@@ -120,16 +114,14 @@ namespace Services
             return borrows;
         }
 
-        // Get User Books which is non returned
         public IEnumerable<UserBooksHistoryViewModel> GetUserOwnedBooks(int? id)
         {
             return GetUserBorrowsHistory(id).Where(x => x.IsReturned == false);
         }
 
-        // Get User Details Model
         public UserDetailsViewModel GetUsersDetailsModel(int? id)
         {
-            UserDetailsViewModel userDetailsViewModel = new UserDetailsViewModel
+            var userDetailsViewModel = new UserDetailsViewModel
             {
                 UserModel = GetUserById(id),
                 BorrowModel = GetUserBorrowsHistory(id),

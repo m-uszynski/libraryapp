@@ -66,13 +66,12 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult Create(BorrowCreateViewModel model)
         {
-            if (model.ChoosenBooks.Contains(-1)) // empty book
+            if (model.ChoosenBooks.Contains(-1))
             {
                 ModelState.AddModelError("emptyBook", "Each list must have a book selected");
             }
             if (!ModelState.IsValid)
             {
-                //return PartialView("_AddBorrowForm", model);
                 var errorList = (from item in ModelState
                                  where item.Value.Errors.Any()
                                  select item.Value.Errors[0].ErrorMessage).ToList();

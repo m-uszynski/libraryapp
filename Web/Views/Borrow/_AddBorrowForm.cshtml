@@ -53,7 +53,6 @@
 
     var books = [];
 
-    // user choice handle
     var getActiveUserActionUrl = '/User/GetActiveUser';
     function getActiveUsers() {
         var data = [];
@@ -97,16 +96,13 @@
         
     })
 
-    // book choices handle
 
     var choosenOption = [];
     var availableOption;
 
-    // add new select list button
     var addSelectBtn = $("#addSelectBtn");
     addSelectBtn.prop("disabled", true);
 
-    // handling for removing the last list
     $(document).on("click", ".del", function () {
         var option = $(this).prev('select').find('option:checked').val();
         if (option !== '') {
@@ -120,12 +116,10 @@
         if ($("#bookContainer").find(".myselect").length <= 1) $("#bookContainer select:last").after('<button class="del" disabled>Delete</button>');
         else $("#bookContainer select:last").after('<button class="del">Delete</button>');
         $(this).next('br').remove();
-        //$(this).remove();
         $("#bookContainer .del:last").remove();
         addSelectBtn.prop("disabled", false);
     })
 
-    // handling for add the new list
     addSelectBtn.on('click', function () {
         $(this).prop("disabled", true);
         $(".del").remove();
@@ -139,7 +133,6 @@
         }
     })
 
-    // handling for a selected book from the list
     $("#bookContainer").on("change", 'select', function () {
         if ($('#bookContainer select').length == getSelectedValues().length) addSelectBtn.prop("disabled", false);
 
@@ -168,7 +161,6 @@
         })
     })
 
-    // function that returns a list of ids of selected books
     function getSelectedValues() {
         var choosenBook = [];
         $("#bookContainer select").find("option:checked").each(function () {
@@ -177,14 +169,12 @@
         return choosenBook;
     }
 
-    // function that returns id of selected user
     function getSelectedUser() {
         var selectedUserId;
         selectedUserId = $("#user select").find("option:checked").attr("value");
         return selectedUserId;
     }
 
-    // to date datepicker
     $("#toDate").kendoDatePicker({
         format: "yyyy-MM-dd"
     })
