@@ -77,7 +77,7 @@
         var currentSelectUser = $(this).find("option:checked").attr("value");
         if (currentSelectUser != -1) {
             $(this).attr('disabled', 'disabled');
-            // get available book which user can borrow
+
             var getBookWhoUserCanBorrowActionUrl = '/Book/GetBookUserCanBorrow/' + currentSelectUser;
             $.ajax({
                 url: getBookWhoUserCanBorrowActionUrl,
@@ -87,7 +87,7 @@
                     books = json;
                 }
             })
-            // put available book which user can borrow to first book select
+
             var firstBookSelect = $("#bookContainer select:first");
             for (i = 0; i < books.length; i++) {
                 firstBookSelect.append("<option value='" + books[i].BookId + "'>" + books[i].Title + "</option>");

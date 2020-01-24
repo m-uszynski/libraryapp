@@ -70,6 +70,10 @@ namespace Web.Controllers
             {
                 ModelState.AddModelError("emptyBook", "Each list must have a book selected");
             }
+            if (model.ChoosenBooks.Length != model.ChoosenBooks.Distinct().Count())
+            {
+                ModelState.AddModelError("haveDuplicate", "It isn't possible to borrow two identical books.");
+            }
             if (!ModelState.IsValid)
             {
                 var errorList = (from item in ModelState
