@@ -71,6 +71,8 @@
     }
 
     $("#ReleaseDate").kendoDatePicker({
-        format: "yyyy-MM-dd"
+        format: "yyyy-MM-dd",
+        value: ((@Html.Raw(Json.Encode(Model.ReleaseDate)) == null) ? null : @Html.Raw(Json.Encode(Model.ReleaseDate)))
     });
+
 </script>
