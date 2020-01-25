@@ -24,7 +24,7 @@ namespace Web.Controllers
             return View();
         }
 
-        public JsonResult GetMostActiveUsers(int skip, int take, int pageSize, string filter)
+        public ActionResult GetMostActiveUsers(int skip, int take, int pageSize, string filter)
         {
             int totalUserCount;
 
@@ -42,7 +42,7 @@ namespace Web.Controllers
             return Json(new { total = totalUserCount, data = pageUser }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetMostOftenBooks(int skip, int take, int pageSize, string title, DateTime? fromdate, DateTime? todate, int? genreid)
+        public ActionResult GetMostOftenBooks(int skip, int take, int pageSize, string title, DateTime? fromdate, DateTime? todate, int? genreid)
         {
             int totalBookCount;
 

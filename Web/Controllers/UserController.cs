@@ -107,7 +107,7 @@ namespace Web.Controllers
             return View(userDetailsViewModel);
         }
 
-        public JsonResult GetActiveUser()
+        public ActionResult GetActiveUser()
         {
             var activeUsers = userService.GetActiveUser();
             return Json(activeUsers, JsonRequestBehavior.AllowGet);

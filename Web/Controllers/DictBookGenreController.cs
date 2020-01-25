@@ -16,7 +16,7 @@ namespace Web.Controllers
             dictBookGenreService = new DictBookGenreService();
         }
 
-        public JsonResult GetBookDictGenre()
+        public ActionResult GetBookDictGenre()
         {
             var model = dictBookGenreService.getDictBookGenres();
             return Json(model, JsonRequestBehavior.AllowGet);

@@ -25,40 +25,40 @@ namespace Web.Controllers
             return View();
         }
 
-        public JsonResult GetCurrentBorrows()
+        public ActionResult GetCurrentBorrows()
         {
             var currentBorrows = borrowService.GetCurrentBookBorrows();
             return Json(currentBorrows, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetUsersWhoHaveBook()
+        public ActionResult GetUsersWhoHaveBook()
         {
             var currentBorrows = borrowService.GetUserWhoHaveBooks();
             return Json(currentBorrows, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult ReturnBorrow(int id)
+        public ActionResult ReturnBorrow(int id)
         {
             borrowService.ReturnBook(id);
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult ReturnBorrows(BorrowListViewModel model)
+        public ActionResult ReturnBorrows(BorrowListViewModel model)
         {
             borrowService.ReturnBooks(model.BorrowsId);
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetCurrentUserBorrow(int id)
+        public ActionResult GetCurrentUserBorrow(int id)
         {
             var model = borrowService.GetCurrentUserBorrows(id);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public PartialViewResult Create()
+        public ActionResult Create()
         {
             return PartialView();
         }
