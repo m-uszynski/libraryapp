@@ -21,7 +21,7 @@ namespace Services
         {
             var model = (from borrow in libraryEntities.Borrows
                          group borrow by borrow.UserId into x
-                         join user in libraryEntities.Users on x.FirstOrDefault().UserId equals user.UserId
+                         join user in libraryEntities.Users on x.Key equals user.UserId
                          select new ReportUserViewModel
                          {
                              FirstName = user.FirstName,
@@ -36,7 +36,7 @@ namespace Services
         {
             var model = (from borrow in libraryEntities.Borrows
                          group borrow by borrow.UserId into x
-                         join user in libraryEntities.Users on x.FirstOrDefault().UserId equals user.UserId
+                         join user in libraryEntities.Users on x.Key equals user.UserId
                          where user.LastName.Substring(0, filterLastNameValue.Length) == filterLastNameValue
                          select new ReportUserViewModel
                          {
@@ -47,23 +47,6 @@ namespace Services
             totalCount = model.Count();
             return model.Skip(skip).Take(take);
         }
-
-        //public IEnumerable<ReportBooksViewModel> GetPageableMostOftenBorrowedBooks(int skip, int take, int pageSize, out int totalCount)
-        //{
-        //    var model = (from borrow in libraryEntities.Borrows
-        //                 group borrow by borrow.BookId into x
-        //                 join book in libraryEntities.Books on x.FirstOrDefault().BookId equals book.BookId
-        //                 select new ReportBooksViewModel
-        //                 {
-        //                     Title = book.Title,
-        //                     Author = book.Author,
-        //                     Genre = book.DictBookGenre.Name,
-        //                     GenreId = book.BookGenreId,
-        //                     BorrowCount = x.Count()
-        //                 }).OrderByDescending(x => x.BorrowCount);
-        //    totalCount = model.Count();
-        //    return model.Skip(skip).Take(take);
-        //}
 
         public IEnumerable<ReportBooksViewModel> GetPageableMostOftenBorrowedBooksWithFilter(int skip, int take, int pageSize, string title, DateTime? fromdate, DateTime? todate, int? genreid, out int totalCount)
         {
@@ -80,7 +63,7 @@ namespace Services
 
             var model = (from borrow in allBorrow
                          group borrow by borrow.BookId into x
-                         join book in libraryEntities.Books on x.FirstOrDefault().BookId equals book.BookId
+                         join book in libraryEntities.Books on x.Key equals book.BookId
                          select new ReportBooksViewModel
                          {
                              Title = book.Title,
@@ -90,7 +73,7 @@ namespace Services
                              BorrowCount = x.Count()
                          });
 
-            if (title != "" && title != null) model = model.Where(x => x.Title.Contains(title));
+            if (!String.IsNullOrEmpty(title)) model = model.Where(x => x.Title.Contains(title));
             if (genreid != null) model = model.Where(x => x.GenreId == genreid);
 
             var finalModel = model.OrderByDescending(x => x.BorrowCount);

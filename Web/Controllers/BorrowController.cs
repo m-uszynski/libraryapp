@@ -3,6 +3,7 @@ using Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -25,40 +26,41 @@ namespace Web.Controllers
             return View();
         }
 
-        public JsonResult GetCurrentBorrows()
+        public ActionResult GetCurrentBorrows()
         {
             var currentBorrows = borrowService.GetCurrentBookBorrows();
             return Json(currentBorrows, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetUsersWhoHaveBook()
+        public ActionResult GetUsersWhoHaveBook()
         {
             var currentBorrows = borrowService.GetUserWhoHaveBooks();
             return Json(currentBorrows, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult ReturnBorrow(int id)
+        public ActionResult ReturnBorrow(int id)
         {
             borrowService.ReturnBook(id);
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public JsonResult ReturnBorrows(BorrowListViewModel model)
+        public ActionResult ReturnBorrows(BorrowListViewModel model)
         {
             borrowService.ReturnBooks(model.BorrowsId);
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetCurrentUserBorrow(int id)
+        public ActionResult GetCurrentUserBorrow(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var model = borrowService.GetCurrentUserBorrows(id);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public PartialViewResult Create()
+        public ActionResult Create()
         {
             return PartialView();
         }
@@ -66,13 +68,16 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult Create(BorrowCreateViewModel model)
         {
-            if (model.ChoosenBooks.Contains(-1)) // empty book
+            if (model.ChoosenBooks.Contains(-1))
             {
                 ModelState.AddModelError("emptyBook", "Each list must have a book selected");
             }
+            if (model.ChoosenBooks.Length != model.ChoosenBooks.Distinct().Count())
+            {
+                ModelState.AddModelError("haveDuplicate", "It isn't possible to borrow two identical books.");
+            }
             if (!ModelState.IsValid)
             {
-                //return PartialView("_AddBorrowForm", model);
                 var errorList = (from item in ModelState
                                  where item.Value.Errors.Any()
                                  select item.Value.Errors[0].ErrorMessage).ToList();
@@ -83,9 +88,11 @@ namespace Web.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult UserReturn(int id)
+        public ActionResult UserReturn(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var model = userService.GetUserById(id);
+            if (model == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             return View(model);
         }
     }

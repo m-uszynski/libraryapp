@@ -21,10 +21,10 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.ReleaseDate, htmlAttributes: new { @class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.ReleaseDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input type="text" id="ReleaseDate"/>
-                @Html.ValidationMessageFor(model => model.ReleaseDate, "", new { @class = "text-danger"})
+                <input type="text" id="ReleaseDate" />
+                @Html.ValidationMessageFor(model => model.ReleaseDate, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
@@ -37,7 +37,8 @@
         <div class="form-group">
             @Html.LabelFor(model => model.BookGenreId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(m => m.BookGenreId, new SelectList(ViewContext.Controller.ViewBag.genres, "BookGenreId", "Name"), htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.DropDownListFor(m => m.BookGenreId, new SelectList(string.Empty, "BookGenreId", "Name"), "-- Select genre -- ", htmlAttributes: new { @class = "form-control" })
+                <br />
                 @Html.ValidationMessageFor(model => model.BookGenreId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -56,7 +57,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Update" class="btn btn-success"/>
+                <input type="submit" value="Update" class="btn btn-success" />
                 <button type="button" id="closeBtn" class="btn btn-primary">Cancel</button>
             </div>
         </div>
@@ -71,6 +72,26 @@
     }
 
     $("#ReleaseDate").kendoDatePicker({
-        format: "yyyy-MM-dd"
+        format: "yyyy-MM-dd",
+        value: ((@Html.Raw(Json.Encode(Model.ReleaseDate)) == null) ? null : @Html.Raw(Json.Encode(Model.ReleaseDate)))
     });
+
+    $(function () {
+        $.ajax({
+            type: "GET",
+            url: "/DictBookGenre/GetBookDictGenre",
+            dataType: "Json",
+            success: function (data) {
+                $.each(data, function (index, value) {
+                    if (@Html.Raw(Json.Encode(Model.BookGenreId)) === value.BookGenreId) {
+                        $("#BookGenreId").append('<option selected="selected" value="' + value.BookGenreId + '">' + value.Name + '</option>');
+                    }
+                    else {
+                        $("#BookGenreId").append('<option value="' + value.BookGenreId + '">' + value.Name + '</option>');
+                    }
+                })
+            }
+        })
+    })
+
 </script>

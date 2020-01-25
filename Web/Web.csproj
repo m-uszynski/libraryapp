@@ -260,7 +260,7 @@
     <Content Include="Views\User\Details.cshtml" />
     <Content Include="Views\Book\Index.cshtml" />
     <Content Include="Views\Book\Create.cshtml" />
-    <Content Include="Views\Book\_AddEditBookForm.cshtml" />
+    <Content Include="Views\Book\_AddBookForm.cshtml" />
     <Content Include="Views\Book\Edit.cshtml" />
     <Content Include="Views\Book\Details.cshtml" />
     <Content Include="Views\Borrow\Index.cshtml" />
@@ -271,6 +271,7 @@
     <Content Include="Views\Report\_MostActiveUsersGrid.cshtml" />
     <Content Include="Views\Report\_MostOftenBorrowedBooksGrid.cshtml" />
     <Content Include="Views\Report\_MostOftenBorrowedBooksFilter.cshtml" />
+    <Content Include="Views\Book\_EditBookForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\DictBookGenre\" />
@@ -315,7 +316,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50824</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

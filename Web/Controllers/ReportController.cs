@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common;
+using Newtonsoft.Json;
 using Services;
 using System;
 using System.Collections.Generic;
@@ -23,11 +24,11 @@ namespace Web.Controllers
             return View();
         }
 
-        public JsonResult GetMostActiveUsers(int skip, int take, int pageSize, string filter)
+        public ActionResult GetMostActiveUsers(int skip, int take, int pageSize, string filter)
         {
             int totalUserCount;
 
-            if (filter != null && filter != "" && filter != "null")
+            if (!String.IsNullOrEmpty(filter) && filter != "null")
             {
                 var filterLastNameValue = JsonConvert.DeserializeObject<FilterContainer>(filter).filters.FirstOrDefault().value;
                 if(filterLastNameValue != null)
@@ -41,31 +42,12 @@ namespace Web.Controllers
             return Json(new { total = totalUserCount, data = pageUser }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetMostOftenBooks(int skip, int take, int pageSize, string title, string fromdate, string todate, int? genreid)
+        public ActionResult GetMostOftenBooks(int skip, int take, int pageSize, string title, DateTime? fromdate, DateTime? todate, int? genreid)
         {
             int totalBookCount;
 
-            DateTime temp;
-            DateTime? FromDate = null;
-            DateTime? ToDate = null;
-            FromDate = DateTime.TryParse(fromdate, out temp) ? temp : (DateTime?)null;
-            ToDate = DateTime.TryParse(todate, out temp) ? temp : (DateTime?)null;
-
-            var pageBooks = reportService.GetPageableMostOftenBorrowedBooksWithFilter(skip, take, pageSize, title, FromDate, ToDate, genreid, out totalBookCount);
+            var pageBooks = reportService.GetPageableMostOftenBorrowedBooksWithFilter(skip, take, pageSize, title, fromdate, todate, genreid, out totalBookCount);
             return Json(new { total = totalBookCount, data = pageBooks }, JsonRequestBehavior.AllowGet);
-        }
-
-        class FilterContainer
-        {
-            public List<FilterDescription> filters { get; set; }
-            public string logic { get; set; }
-        }
-
-        class FilterDescription
-        {
-            public string @operator { get; set; }
-            public string field { get; set; }
-            public string value { get; set; }
         }
 
     }

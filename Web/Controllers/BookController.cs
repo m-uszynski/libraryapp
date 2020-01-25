@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Common;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace Web.Controllers
 {
@@ -28,46 +29,36 @@ namespace Web.Controllers
             return View();
         }
 
-        public string GetBooks()
+        public ActionResult GetBooks()
         {
             var books = bookService.GetBooks();
-            var json = JsonConvert.SerializeObject(books, Formatting.Indented, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            });
-            return json;
+            return Json(books, JsonRequestBehavior.AllowGet);
         }
 
-        public string GetBorrowsInBook(int id)
+        public ActionResult GetBorrowsInBook(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var borrows = borrowService.GetBorrowsInBook(id);
-            var json = JsonConvert.SerializeObject(borrows, Formatting.Indented, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            });
-            return json;
+            return Json(borrows, JsonRequestBehavior.AllowGet);
         }
 
-        public string GetCurrentBorrowInBook(int id)
+        public ActionResult GetCurrentBorrowInBook(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var borrows = borrowService.GetCurrentBorrowsInBook(id);
-            var json = JsonConvert.SerializeObject(borrows, Formatting.Indented, new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            });
-            return json;
+            return Json(borrows, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetBookViewModelById(int id)
+        public ActionResult GetBookViewModelById(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var book = bookService.GetBookById(id);
             return Json(book, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public PartialViewResult Create()
+        public ActionResult Create()
         {
-            ViewBag.genres = dictBookGenreService.getDictBookGenres();
             return PartialView();
         }
 
@@ -76,8 +67,7 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.genres = dictBookGenreService.getDictBookGenres();
-                return PartialView("_AddEditBookForm", bookViewModel);
+                return PartialView("_AddBookForm", bookViewModel);
             }
 
             bookService.InsertBook(bookViewModel);
@@ -85,10 +75,11 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var bookViewModel = bookService.GetBookById(id);
-            ViewBag.genres = dictBookGenreService.getDictBookGenres();
+            if (bookViewModel == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             return PartialView(bookViewModel);
         }
 
@@ -97,8 +88,7 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.genres = dictBookGenreService.getDictBookGenres();
-                return PartialView("_AddEditBookForm", bookViewModel);
+                return PartialView("_EditBookForm", bookViewModel);
             }
 
             bookService.UpdateBook(bookViewModel);
@@ -106,13 +96,15 @@ namespace Web.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
-        public ViewResult Details(int id)
+        public ActionResult Details(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var bookViewModel = bookService.GetBookById(id);
+            if (bookViewModel == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             return View(bookViewModel);
         }
 
-        public JsonResult GetBookUserCanBorrow(int id)
+        public ActionResult GetBookUserCanBorrow(int id)
         {
             var bookUserCanBorrow = bookService.GetBookUserCanBorrow(id);
             return Json(bookUserCanBorrow, JsonRequestBehavior.AllowGet);
