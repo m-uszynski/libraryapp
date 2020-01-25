@@ -17,7 +17,7 @@ namespace Services
             this.libraryEntities = new LibraryEntities();
         }
 
-        public IEnumerable<BorrowViewModel> GetBorrowsInBook(int bookId)
+        public IEnumerable<BorrowViewModel> GetBorrowsInBook(int? bookId)
         {
             var model = libraryEntities.Borrows.Where(b => b.BookId == bookId).Select(
                 x => new BorrowViewModel {
@@ -32,7 +32,7 @@ namespace Services
             return model;
         }
 
-        public IEnumerable<BorrowViewModel> GetCurrentBorrowsInBook(int bookId)
+        public IEnumerable<BorrowViewModel> GetCurrentBorrowsInBook(int? bookId)
         {
             var model = libraryEntities.Borrows.Where(b => b.BookId == bookId && b.IsReturned == false).Select(
                 x => new BorrowViewModel {
@@ -70,7 +70,7 @@ namespace Services
             return model;
         }
 
-        public IEnumerable<BorrowUserReturnViewModel> GetCurrentUserBorrows(int userId)
+        public IEnumerable<BorrowUserReturnViewModel> GetCurrentUserBorrows(int? userId)
         {
             var model = (from borrow in libraryEntities.Borrows
                          join book in libraryEntities.Books on borrow.BookId equals book.BookId

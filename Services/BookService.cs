@@ -38,9 +38,10 @@ namespace Services
             return model;
         }
 
-        public BookViewModel GetBookById(int bookId)
+        public BookViewModel GetBookById(int? bookId)
         {
             var book = libraryEntities.Books.Find(bookId);
+            if (book == null) return null;
             var model = new BookViewModel
             {
                 BookId = book.BookId,

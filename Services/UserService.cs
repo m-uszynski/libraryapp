@@ -88,7 +88,7 @@ namespace Services
             libraryEntities.SaveChanges();
         }
 
-        public void DeleteUser(int id)
+        public void DeleteUser(int? id)
         {
             var deletedUser = libraryEntities.Users.Find(id);
             deletedUser.IsActive = false;
@@ -127,6 +127,7 @@ namespace Services
                 BorrowModel = GetUserBorrowsHistory(id),
                 BookModel = GetUserOwnedBooks(id)
             };
+            if (userDetailsViewModel.UserModel == null || userDetailsViewModel.BookModel == null || userDetailsViewModel.BorrowModel == null) return null;
             return userDetailsViewModel;
         }
 

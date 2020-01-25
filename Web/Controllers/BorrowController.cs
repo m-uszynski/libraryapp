@@ -3,6 +3,7 @@ using Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -51,8 +52,9 @@ namespace Web.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetCurrentUserBorrow(int id)
+        public ActionResult GetCurrentUserBorrow(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var model = borrowService.GetCurrentUserBorrows(id);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
@@ -86,9 +88,11 @@ namespace Web.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult UserReturn(int id)
+        public ActionResult UserReturn(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var model = userService.GetUserById(id);
+            if (model == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             return View(model);
         }
     }

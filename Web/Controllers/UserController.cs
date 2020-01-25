@@ -87,15 +87,16 @@ namespace Web.Controllers
         public ActionResult SoftDelete(int? id)
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            UserViewModel user = userService.GetUserById(id);
+            var user = userService.GetUserById(id);
             if (user == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             return View(user);
         }
 
         [HttpPost, ActionName("SoftDelete")]
         [ValidateAntiForgeryToken]
-        public ActionResult SoftDeleteConfirmed(int id)
+        public ActionResult SoftDeleteConfirmed(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             userService.DeleteUser(id);
             return RedirectToAction("Index");
         }
@@ -104,6 +105,7 @@ namespace Web.Controllers
         {
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var userDetailsViewModel = userService.GetUsersDetailsModel(id);
+            if (userDetailsViewModel == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             return View(userDetailsViewModel);
         }
 

@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Common;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace Web.Controllers
 {
@@ -34,20 +35,23 @@ namespace Web.Controllers
             return Json(books, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetBorrowsInBook(int id)
+        public ActionResult GetBorrowsInBook(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var borrows = borrowService.GetBorrowsInBook(id);
             return Json(borrows, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetCurrentBorrowInBook(int id)
+        public ActionResult GetCurrentBorrowInBook(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var borrows = borrowService.GetCurrentBorrowsInBook(id);
             return Json(borrows, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetBookViewModelById(int id)
+        public ActionResult GetBookViewModelById(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var book = bookService.GetBookById(id);
             return Json(book, JsonRequestBehavior.AllowGet);
         }
@@ -73,9 +77,11 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var bookViewModel = bookService.GetBookById(id);
+            if (bookViewModel == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             ViewBag.genres = dictBookGenreService.getDictBookGenres();
             return PartialView(bookViewModel);
         }
@@ -94,9 +100,11 @@ namespace Web.Controllers
             return Json(new { success = true }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var bookViewModel = bookService.GetBookById(id);
+            if (bookViewModel == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             return View(bookViewModel);
         }
 
