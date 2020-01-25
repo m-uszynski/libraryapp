@@ -34,6 +34,7 @@ namespace Common
         public string ISBN { get; set; }
 
         [Required]
+        [Display(Name = "Genre")]
         public int BookGenreId { get; set; }
 
         [Required]

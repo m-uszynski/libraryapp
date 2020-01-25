@@ -70,3 +70,9 @@
         </div>
     </div>
 }
+
+<script>
+    var date = @Html.Raw(Json.Encode(Model.BirthDate));
+    var jsDate = new Date(parseInt(date.substr(6)));
+    $("#BirthDate").val(jsDate.getFullYear() + "-" + ("0" + (jsDate.getMonth() + 1)).slice(-2) + "-" + ("0" + jsDate.getDate()).slice(-2));
+</script>

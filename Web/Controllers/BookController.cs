@@ -59,7 +59,6 @@ namespace Web.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            ViewBag.genres = dictBookGenreService.getDictBookGenres();
             return PartialView();
         }
 
@@ -68,7 +67,6 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.genres = dictBookGenreService.getDictBookGenres();
                 return PartialView("_AddBookForm", bookViewModel);
             }
 
@@ -82,7 +80,6 @@ namespace Web.Controllers
             if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             var bookViewModel = bookService.GetBookById(id);
             if (bookViewModel == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            ViewBag.genres = dictBookGenreService.getDictBookGenres();
             return PartialView(bookViewModel);
         }
 
@@ -91,7 +88,6 @@ namespace Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.genres = dictBookGenreService.getDictBookGenres();
                 return PartialView("_EditBookForm", bookViewModel);
             }
 

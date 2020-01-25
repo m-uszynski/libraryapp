@@ -36,8 +36,8 @@
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.BookGenreId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(m => m.BookGenreId, new SelectList(ViewContext.Controller.ViewBag.genres, "BookGenreId", "Name"), htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">        
+                @Html.DropDownListFor(m => m.BookGenreId, new SelectList(string.Empty, "BookGenreId", "Name"), "-- Select genre -- ", htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.BookGenreId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -73,4 +73,30 @@
     $("#ReleaseDate").kendoDatePicker({
         format: "yyyy-MM-dd"
     });
+
+    $(function () {
+        $.ajax({
+            type: "GET",
+            url: "/DictBookGenre/GetBookDictGenre",
+            dataType: "Json",
+            success: function (data) {
+                var model = @Html.Raw(Json.Encode(Model));
+                if (model != null) {
+                    $.each(data, function (index, value) {
+                        if (model.BookGenreId != 0 && model.BookGenreId === value.BookGenreId) {
+                            $("#BookGenreId").append('<option selected="selected" value="' + value.BookGenreId + '">' + value.Name + '</option>');
+                        }
+                        else {
+                            $("#BookGenreId").append('<option value="' + value.BookGenreId + '">' + value.Name + '</option>');
+                        }
+                    })
+                }
+                else {
+                    $.each(data, function (index, value) {
+                        $("#BookGenreId").append('<option value="' + value.BookGenreId + '">' + value.Name + '</option>');
+                    })
+                }
+            }
+        })
+    })
 </script>

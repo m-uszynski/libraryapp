@@ -113,7 +113,7 @@ namespace Services
 
         public void InsertBorrows(BorrowCreateViewModel model)
         {
-            IList<Borrow> newBorrows = new List<Borrow>();
+            var newBorrows = new List<Borrow>();
             foreach(var book in model.ChoosenBooks)
             {
                 newBorrows.Add(new Borrow

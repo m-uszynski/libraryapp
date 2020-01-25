@@ -17,7 +17,7 @@
             transport: {
                 read: function (option) {
                     $.ajax({
-                        url: 'http://localhost:50824/Report/GetMostActiveUsers',
+                        url: '/Report/GetMostActiveUsers',
                         dataType: 'json',
                         contentType: "application/json; charset=utf-8",
                         async: loadAsync,
